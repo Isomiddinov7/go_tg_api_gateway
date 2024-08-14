@@ -1,0 +1,1128 @@
+definitions:
+  coins_service.BuyOrSellRequest:
+    properties:
+      coin_amount:
+        type: string
+      coin_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  coins_service.BuyOrSellResponse:
+    properties:
+      admin_address:
+        type: string
+      amount_price:
+        type: string
+      coin_amount:
+        type: string
+    type: object
+  coins_service.Coin:
+    properties:
+      address:
+        type: string
+      card_number:
+        type: string
+      coin_buy_price:
+        type: string
+      coin_icon:
+        type: string
+      coin_sell_price:
+        type: string
+      created_at:
+        type: string
+      halfcoins:
+        items:
+          $ref: '#/definitions/coins_service.HalfCoinPrice'
+        type: array
+      id:
+        type: string
+      imageId:
+        type: string
+      name:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  coins_service.GetListCoinResponse:
+    properties:
+      coins:
+        items:
+          $ref: '#/definitions/coins_service.Coin'
+        type: array
+      count:
+        type: integer
+    type: object
+  coins_service.HalfCoinPrice:
+    properties:
+      halfCoinAmount:
+        type: string
+      halfCoinPrice:
+        type: string
+    type: object
+  coins_service.UpdateCoin:
+    properties:
+      address:
+        type: string
+      card_number:
+        type: string
+      coin_buy_price:
+        type: string
+      coin_icon:
+        type: string
+      coin_sell_price:
+        type: string
+      halfcoins:
+        items:
+          $ref: '#/definitions/coins_service.HalfCoinPrice'
+        type: array
+      id:
+        type: string
+      name:
+        type: string
+      status:
+        type: string
+    type: object
+  http.Response:
+    properties:
+      data: {}
+      description:
+        type: string
+      status:
+        type: string
+    type: object
+  users_service.CreateUser:
+    properties:
+      auth_date:
+        type: string
+      first_name:
+        type: string
+      hash:
+        type: string
+      last_name:
+        type: string
+      status:
+        type: string
+      username:
+        type: string
+    type: object
+  users_service.GetListUserResponse:
+    properties:
+      count:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/users_service.User'
+        type: array
+    type: object
+  users_service.UpdateUser:
+    properties:
+      id:
+        type: string
+      status:
+        type: string
+    type: object
+  users_service.User:
+    properties:
+      auth_date:
+        type: string
+      created_at:
+        type: string
+      first_name:
+        type: string
+      hash:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  users_service.UserBuyRequest:
+    properties:
+      address:
+        type: string
+      coin_amount:
+        type: string
+      coin_id:
+        type: string
+      message:
+        type: string
+      pay_img:
+        type: string
+      user_id:
+        type: string
+    type: object
+  users_service.UserSellRequest:
+    properties:
+      card_number:
+        type: string
+      coin_amount:
+        type: string
+      coin_id:
+        type: string
+      coin_img:
+        type: string
+      message:
+        type: string
+      user_id:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /buy:
+    post:
+      consumes:
+      - application/json
+      description: Get Buy
+      operationId: get_buy
+      parameters:
+      - description: BuyOrSellRequest
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/coins_service.BuyOrSellRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: SellBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.BuyOrSellResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Buy
+      tags:
+      - Buy
+  /coin:
+    get:
+      consumes:
+      - application/json
+      description: Get Coins List
+      operationId: get_coin_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetAllCoinResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.GetListCoinResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Coins List
+      tags:
+      - Coin
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create Coin
+      operationId: create_coin
+      parameters:
+      - description: Upload file
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Coin Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Coin Buy Price
+        in: formData
+        name: coin_buy_price
+        required: true
+        type: string
+      - description: Coin Sell Price
+        in: formData
+        name: coin_sell_price
+        required: true
+        type: string
+      - description: Address
+        in: formData
+        name: address
+        required: true
+        type: string
+      - description: Card Number
+        in: formData
+        name: card_number
+        required: true
+        type: string
+      - description: Status
+        in: formData
+        name: status
+        required: true
+        type: string
+      - description: coins_service.CreateCoin.HalfCoinPrice
+        in: formData
+        name: halfcoins
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetCoinBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.Coin'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Coin
+      tags:
+      - Coin
+  /coin/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Coin
+      operationId: delete_coin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Coin data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Coin
+      tags:
+      - Coin
+    get:
+      consumes:
+      - application/json
+      description: Get Coin  By ID
+      operationId: get_coin_by_id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: CoinBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.Coin'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Coin  By ID
+      tags:
+      - Coin
+    put:
+      consumes:
+      - application/json
+      description: Update Coin
+      operationId: update_coin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UpdateCoin
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/coins_service.UpdateCoin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Coin data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.Coin'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Coin
+      tags:
+      - Coin
+  /sell:
+    post:
+      consumes:
+      - application/json
+      description: Get Sell
+      operationId: get_sell
+      parameters:
+      - description: BuyOrSellRequest
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/coins_service.BuyOrSellRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: SellBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.BuyOrSellResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Sell
+      tags:
+      - Sell
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Get Users List
+      operationId: get_user_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      - default: a1924766-a9ee-11ed-afa1-0242ac120001
+        description: Platform-Id
+        in: header
+        name: Platform-Id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetAllUserResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.GetListUserResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Users List
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create User
+      operationId: create_user
+      parameters:
+      - description: CreateUserBody
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/users_service.CreateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetUserBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.User'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create User
+      tags:
+      - User
+  /user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get User  By ID
+      operationId: get_user_by_id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: UserBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.User'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get User  By ID
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update User
+      operationId: update_user
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UpdateUser
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/users_service.UpdateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update User
+      tags:
+      - User
+  /user/buy:
+    post:
+      consumes:
+      - application/json
+      description: UserBuy
+      operationId: User_buy
+      parameters:
+      - description: UserBuyBody
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/users_service.UserBuyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetUserBuyBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: UserBuy
+      tags:
+      - User
+  /user/image/buy:
+    post:
+      consumes:
+      - multipart/form-data
+      description: UploadUserBuyFile
+      operationId: UploadUserBuyFile
+      parameters:
+      - description: Upload file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success message
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: UploadUserBuyFile
+      tags:
+      - User
+  /user/image/buy/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User Buy Image
+      operationId: delete_image
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete User Buy Image
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the URL for a specific user buy image
+      operationId: get_user_buy_file_url
+      parameters:
+      - description: Image ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "404":
+          description: File not found
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get User Buy Image URL
+      tags:
+      - User
+  /user/image/sell:
+    post:
+      consumes:
+      - multipart/form-data
+      description: UploadUserSellFile
+      operationId: UploadUserSellFile
+      parameters:
+      - description: Upload file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success message
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: UploadUserSellFile
+      tags:
+      - User
+  /user/image/sell/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Coin Image
+      operationId: delete_image
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Coin Image
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the URL for a specific user sell image
+      operationId: get_user_sell_file_url
+      parameters:
+      - description: Image ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "404":
+          description: File not found
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get User Sell Image URL
+      tags:
+      - User
+  /user/sell:
+    post:
+      consumes:
+      - application/json
+      description: UserSell
+      operationId: User_sell
+      parameters:
+      - description: UserSellBody
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/users_service.UserSellRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetUserSellBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: UserSell
+      tags:
+      - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
