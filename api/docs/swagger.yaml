@@ -93,6 +93,19 @@ definitions:
       status:
         type: string
     type: object
+  users_service.AdminResponse:
+    properties:
+      file:
+        type: string
+      first_name:
+        type: string
+      last_message:
+        type: string
+      message_count:
+        type: integer
+      user_id:
+        type: string
+    type: object
   users_service.CreateUser:
     properties:
       auth_date:
@@ -108,6 +121,15 @@ definitions:
       username:
         type: string
     type: object
+  users_service.GetListUserBuyTransactionResponse:
+    properties:
+      count:
+        type: integer
+      user_transaction:
+        items:
+          $ref: '#/definitions/users_service.UserBuyTransaction'
+        type: array
+    type: object
   users_service.GetListUserResponse:
     properties:
       count:
@@ -116,6 +138,57 @@ definitions:
         items:
           $ref: '#/definitions/users_service.User'
         type: array
+    type: object
+  users_service.GetListUserSellTransactionResponse:
+    properties:
+      count:
+        type: integer
+      user_transaction:
+        items:
+          $ref: '#/definitions/users_service.UserSellTransaction'
+        type: array
+    type: object
+  users_service.GetMessageAdminResponse:
+    properties:
+      admin_message:
+        items:
+          $ref: '#/definitions/users_service.AdminResponse'
+        type: array
+      count:
+        type: integer
+    type: object
+  users_service.GetMessageUserResponse:
+    properties:
+      count:
+        type: integer
+      messages:
+        items:
+          $ref: '#/definitions/users_service.Message'
+        type: array
+    type: object
+  users_service.Message:
+    properties:
+      created_at:
+        type: string
+      file:
+        type: string
+      id:
+        type: string
+      read:
+        type: string
+      status:
+        type: string
+      text:
+        type: string
+      user_id:
+        type: string
+    type: object
+  users_service.UpdateMessageRequest:
+    properties:
+      id:
+        type: string
+      read:
+        type: string
     type: object
   users_service.UpdateUser:
     properties:
@@ -145,32 +218,52 @@ definitions:
       username:
         type: string
     type: object
-  users_service.UserBuyRequest:
+  users_service.UserBuyTransaction:
     properties:
-      address:
+      CheckImg:
+        type: string
+      all_price:
+        type: string
+      coin:
         type: string
       coin_amount:
         type: string
-      coin_id:
+      coin_price:
+        type: string
+      created_at:
+        type: string
+      id:
         type: string
       message:
         type: string
-      pay_img:
+      status:
         type: string
-      user_id:
+      user:
+        type: string
+      user_address:
         type: string
     type: object
-  users_service.UserSellRequest:
+  users_service.UserSellTransaction:
     properties:
+      CheckImg:
+        type: string
+      all_price:
+        type: string
       card_number:
         type: string
       coin_amount:
         type: string
       coin_id:
         type: string
-      coin_img:
+      coin_price:
+        type: string
+      created_at:
+        type: string
+      id:
         type: string
       message:
+        type: string
+      status:
         type: string
       user_id:
         type: string
@@ -178,6 +271,144 @@ definitions:
 info:
   contact: {}
 paths:
+  /admin/message:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create Message
+      operationId: create_admin_message
+      parameters:
+      - description: Upload file
+        in: formData
+        name: file
+        type: file
+      - description: TEXT
+        in: formData
+        name: text
+        required: true
+        type: string
+      - description: UserId
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetCoinBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Message
+      tags:
+      - Message
+  /admin/message/:
+    get:
+      consumes:
+      - application/json
+      description: Get Admin Message  By ID
+      operationId: get_admin_all_message_by_id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: UserMessageBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.GetMessageAdminResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Admin Message  By ID
+      tags:
+      - Admin Message
+  /admin/message/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Admin Message  By ID
+      operationId: get_admin_message_by_id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: UserMessageBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.GetMessageUserResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Admin Message  By ID
+      tags:
+      - Admin Message
   /buy:
     post:
       consumes:
@@ -496,6 +727,57 @@ paths:
       summary: Update Coin
       tags:
       - Coin
+  /message/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update Message
+      operationId: update_message
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UpdateMessage
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/users_service.UpdateMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Message data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Message
+      tags:
+      - Message
   /sell:
     post:
       consumes:
@@ -743,18 +1025,95 @@ paths:
       tags:
       - User
   /user/buy:
+    get:
+      consumes:
+      - application/json
+      description: Get Transactions List
+      operationId: get_transaction_by_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetAllCoinResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.GetListUserBuyTransactionResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Transactions List
+      tags:
+      - User
     post:
       consumes:
       - application/json
       description: UserBuy
       operationId: User_buy
       parameters:
-      - description: UserBuyBody
-        in: body
-        name: profile
+      - description: Upload file
+        in: formData
+        name: file
         required: true
-        schema:
-          $ref: '#/definitions/users_service.UserBuyRequest'
+        type: file
+      - description: User ID
+        in: formData
+        name: userId
+        required: true
+        type: string
+      - description: Coin ID
+        in: formData
+        name: coinId
+        required: true
+        type: string
+      - description: Address
+        in: formData
+        name: address
+        required: true
+        type: string
+      - description: CoinAmount
+        in: formData
+        name: coin_amount
+        required: true
+        type: string
+      - description: Message
+        in: formData
+        name: message
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -788,23 +1147,32 @@ paths:
       summary: UserBuy
       tags:
       - User
-  /user/image/buy:
+  /user/message:
     post:
       consumes:
       - multipart/form-data
-      description: UploadUserBuyFile
-      operationId: UploadUserBuyFile
+      description: Create Message
+      operationId: create_user_message
       parameters:
       - description: Upload file
         in: formData
         name: file
-        required: true
         type: file
+      - description: TEXT
+        in: formData
+        name: text
+        required: true
+        type: string
+      - description: UserId
+        in: formData
+        name: user_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Success message
+          description: GetCoinBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -830,15 +1198,15 @@ paths:
                 data:
                   type: string
               type: object
-      summary: UploadUserBuyFile
+      summary: Create Message
       tags:
-      - User
-  /user/image/buy/{id}:
-    delete:
+      - Message
+  /user/message/{id}:
+    get:
       consumes:
       - application/json
-      description: Delete User Buy Image
-      operationId: delete_image
+      description: Get User Message  By ID
+      operationId: get_user_message_by_id
       parameters:
       - description: id
         in: path
@@ -849,111 +1217,13 @@ paths:
       - application/json
       responses:
         "200":
-          description: Success
+          description: UserMessageBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  type: object
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Delete User Buy Image
-      tags:
-      - User
-    get:
-      consumes:
-      - application/json
-      description: Retrieve the URL for a specific user buy image
-      operationId: get_user_buy_file_url
-      parameters:
-      - description: Image ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Success
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "404":
-          description: File not found
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Get User Buy Image URL
-      tags:
-      - User
-  /user/image/sell:
-    post:
-      consumes:
-      - multipart/form-data
-      description: UploadUserSellFile
-      operationId: UploadUserSellFile
-      parameters:
-      - description: Upload file
-        in: formData
-        name: file
-        required: true
-        type: file
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Success message
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
+                  $ref: '#/definitions/users_service.GetMessageUserResponse'
               type: object
         "400":
           description: Invalid Argument
@@ -973,120 +1243,99 @@ paths:
                 data:
                   type: string
               type: object
-      summary: UploadUserSellFile
+      summary: Get User Message  By ID
       tags:
-      - User
-  /user/image/sell/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete Coin Image
-      operationId: delete_image
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Success
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: object
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Delete Coin Image
-      tags:
-      - User
-    get:
-      consumes:
-      - application/json
-      description: Retrieve the URL for a specific user sell image
-      operationId: get_user_sell_file_url
-      parameters:
-      - description: Image ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Success
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "404":
-          description: File not found
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Get User Sell Image URL
-      tags:
-      - User
+      - User Message
   /user/sell:
+    get:
+      consumes:
+      - application/json
+      description: Get Transactions List
+      operationId: get_transaction_sell_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetAllCoinResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.GetListUserSellTransactionResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Transactions List
+      tags:
+      - User
     post:
       consumes:
       - application/json
       description: UserSell
       operationId: User_sell
       parameters:
-      - description: UserSellBody
-        in: body
-        name: profile
+      - description: Upload file
+        in: formData
+        name: file
         required: true
-        schema:
-          $ref: '#/definitions/users_service.UserSellRequest'
+        type: file
+      - description: User ID
+        in: formData
+        name: userId
+        required: true
+        type: string
+      - description: Coin ID
+        in: formData
+        name: coinId
+        required: true
+        type: string
+      - description: CoinAmount
+        in: formData
+        name: coin_amount
+        required: true
+        type: string
+      - description: Message
+        in: formData
+        name: message
+        required: true
+        type: string
+      - description: Card Number
+        in: formData
+        name: card_number
+        required: true
+        type: string
       produces:
       - application/json
       responses:

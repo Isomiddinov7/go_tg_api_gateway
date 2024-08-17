@@ -35,14 +35,13 @@ import (
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) CreateCoin(c *gin.Context) {
-	// Get the uploaded file from the form
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
 		return
 	}
 
-	// Check file format
 	ext := filepath.Ext(file.Filename)
 	validFormats := map[string]bool{
 		".jpg":  true,
@@ -55,14 +54,12 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 		return
 	}
 
-	// Create the uploads directory if it doesn't exist
 	err = os.MkdirAll("images/coin", os.ModePerm)
 	if err != nil {
 		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to create uploads directory"})
 		return
 	}
 
-	// Generate a unique filename using UUID
 	uniqueId := uuid.New()
 	filename := strings.Replace(uniqueId.String(), "-", "", -1) + ext
 	filePath := filepath.Join("images/coin", filename)
@@ -72,7 +69,6 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 		return
 	}
 
-	// Save file info to database
 	imageLink := filePath
 	imgId, err := h.services.FileImage().ImageUpload(
 		context.Background(),
@@ -86,7 +82,6 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 		return
 	}
 
-	// Bind the form data to CreateCoin struct
 	var coin coins_service.CreateCoin
 
 	coin.Name = c.PostForm("name")
@@ -96,15 +91,14 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 	coin.CardNumber = c.PostForm("card_number")
 	coin.Status = c.PostForm("status")
 	coin.ImageId = imgId.Id
-	// Get and parse the halfcoins data
 	halfcoinsJSON := c.PostForm("halfcoins")
 	var halfcoins []*coins_service.HalfCoinPrice
 	if err := json.Unmarshal([]byte(halfcoinsJSON), &halfcoins); err != nil {
 		h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid halfcoins data"})
 		return
 	}
+
 	coin.Halfcoins = halfcoins
-	// Create the coin
 	_, err = h.services.CoinService().Create(
 		c.Request.Context(),
 		&coin,
@@ -132,7 +126,6 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 func (h *Handler) GetCoinByID(c *gin.Context) {
 
 	CoinID := c.Param("id")
-
 	if !util.IsValidUUID(CoinID) {
 		h.handleResponse(c, http.InvalidArgument, "Coin id is an invalid uuid")
 		return
@@ -151,11 +144,10 @@ func (h *Handler) GetCoinByID(c *gin.Context) {
 
 	fileName := strings.Replace(resp.ImageId, "-", "", -1)
 	extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-
-	var filePath, imageUrl string
-
-	var found bool
-
+	var (
+		filePath, imageUrl string
+		found              bool
+	)
 	for _, ext := range extensions {
 		potensialPath := fmt.Sprintf("./images/coin/%s%s", fileName, ext)
 		link := fmt.Sprintf("coin/image/%s%s", fileName, ext)
@@ -166,12 +158,10 @@ func (h *Handler) GetCoinByID(c *gin.Context) {
 			break
 		}
 	}
-
 	if !found {
 		h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
 		return
 	}
-
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
 		return
@@ -276,9 +266,7 @@ func (h *Handler) GetCoinList(c *gin.Context) {
 func (h *Handler) UpdateCoin(c *gin.Context) {
 
 	var Coin coins_service.UpdateCoin
-
 	Coin.Id = c.Param("id")
-
 	if !util.IsValidUUID(Coin.Id) {
 		h.handleResponse(c, http.InvalidArgument, "Coin id is an invalid uuid")
 		return
@@ -294,7 +282,6 @@ func (h *Handler) UpdateCoin(c *gin.Context) {
 		c.Request.Context(),
 		&Coin,
 	)
-
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
@@ -318,11 +305,11 @@ func (h *Handler) UpdateCoin(c *gin.Context) {
 func (h *Handler) DeleteCoin(c *gin.Context) {
 
 	CoinId := c.Param("id")
-
 	if !util.IsValidUUID(CoinId) {
 		h.handleResponse(c, http.InvalidArgument, "Coin id is an invalid uuid")
 		return
 	}
+
 	resp, err := h.services.CoinService().GetById(
 		c.Request.Context(),
 		&coins_service.CoinPrimaryKey{Id: CoinId},
@@ -340,10 +327,8 @@ func (h *Handler) DeleteCoin(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(resp.ImageId)
 	name := strings.Replace(resp.ImageId, "-", "", -1)
 	extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-
 	var (
 		filePath string
 		found    bool
@@ -367,6 +352,7 @@ func (h *Handler) DeleteCoin(c *gin.Context) {
 		c.JSON(500, gin.H{"error": "Server Error", "details": err.Error()})
 		return
 	}
+
 	_, err = h.services.FileImage().ImageDelete(context.Background(), &coins_service.ImagePrimaryKey{Id: resp.ImageId})
 	if err != nil {
 		c.JSON(500, gin.H{"error": "Server Error", "details": err.Error()})

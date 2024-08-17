@@ -68,7 +68,6 @@ func (h *Handler) GetBuy(c *gin.Context) {
 		h.handleResponse(c, http.BadRequest, err.Error())
 		return
 	}
-
 	resp, err := h.services.BuyOrSale().GetBuy(
 		context.Background(),
 		&coins_service.BuyOrSellRequest{

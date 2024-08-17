@@ -34,30 +34,30 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.GET("/coin", h.GetCoinList)
 	r.PUT("/coin/:id", h.UpdateCoin)
 	r.DELETE("/coin/:id", h.DeleteCoin)
-	// r.POST("/coin/image", h.HandleCoinFileupload)
-	// r.GET("/coin/image/:id", h.GetCoinFileURL)
-	// r.DELETE("/coin/image/:id", h.HandleCoinDeleteImage)
 
 	//Buy Or Sale
 	r.POST("/sell", h.GetSell)
-	r.POST("/user/sell", h.UserSell)
-	r.POST("/user/image/sell", h.HandleUserSellFileupload)
-	r.GET("/user/image/sell/:id", h.GetUserSellFileURL)
-	r.DELETE("/user/image/sell/:id", h.HandleUserSellDeleteImage)
 	r.POST("/buy", h.GetBuy)
-	r.POST("/user/buy", h.UserBuy)
-	r.POST("/user/image/buy", h.HandleUserBuyFileupload)
-	r.GET("/user/image/buy/:id", h.GetUserBuyFileURL)
-	r.DELETE("/user/image/buy/:id", h.HandleUserBuyDeleteImage)
 
 	// USER
 	r.POST("/user", h.CreateUser)
 	r.GET("/user/:id", h.GetUserByID)
 	r.GET("/user", h.GetUserList)
 	r.PUT("/user/:id", h.UpdateUser)
-	// r.POST("/user/image", h.HandleUserFileupload)
-	// r.GET("/user/image/:id", h.GetUserFileURL)
-	// r.DELETE("/user/image/:id", h.HandleUserDeleteImage)
+
+	//Transactions
+	r.POST("/user/sell", h.UserSell)
+	r.POST("/user/buy", h.UserBuy)
+	r.GET("/user/sell", h.AllUserSell)
+	r.GET("/user/buy", h.AllUserBuy)
+
+	//Messages
+	r.POST("/user/message", h.CreateUserMessage)
+	r.POST("/admin/message", h.CreateAdminMessage)
+	r.PUT("/message/:id", h.UpdateMessage)
+	r.GET("/user/message/:id", h.GetUserMessage)
+	r.GET("/admin/message", h.GetAdminAllMessage)
+	r.GET("/admin/message/:id", h.GetUserMessage)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

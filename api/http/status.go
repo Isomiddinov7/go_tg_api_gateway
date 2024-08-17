@@ -63,6 +63,11 @@ var (
 		Status:      "GRPC_ERROR",
 		Description: "The gRPC request failed",
 	}
+	ErrMissingFile = Status{
+		Code:        401,
+		Status:      "Error Missing File",
+		Description: "http: no such file",
+	}
 )
 
 // Can be added as many as need like belove examples

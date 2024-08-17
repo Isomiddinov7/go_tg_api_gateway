@@ -12,7 +12,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/spf13/cast"
 )
 
 // UserSell godoc
@@ -23,19 +22,71 @@ import (
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param profile body users_service.UserSellRequest true "UserSellBody"
+// @Param file formData file true "Upload file"
+// @Param userId formData string true "User ID"
+// @Param coinId formData string true "Coin ID"
+// @Param coin_amount formData string true "CoinAmount"
+// @Param message formData string true "Message"
+// @Param card_number formData string true "Card Number"
 // @Success 200 {object} http.Response{data=string} "GetUserSellBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) UserSell(c *gin.Context) {
 
-	var user_sell users_service.UserSellRequest
-
-	err := c.ShouldBindJSON(&user_sell)
+	file, err := c.FormFile("file")
 	if err != nil {
-		h.handleResponse(c, http.BadRequest, err.Error())
+		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
 		return
 	}
+
+	ext := filepath.Ext(file.Filename)
+	validFormats := map[string]bool{
+		".jpg":  true,
+		".jpeg": true,
+		".png":  true,
+		".gif":  true,
+	}
+	if !validFormats[ext] {
+		h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid file format"})
+		return
+	}
+
+	err = os.MkdirAll("images/user_sell", os.ModePerm)
+	if err != nil {
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to create uploads directory"})
+		return
+	}
+
+	uniqueId := uuid.New()
+	filename := strings.Replace(uniqueId.String(), "-", "", -1) + ext
+	filePath := filepath.Join("images/user_sell", filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file"})
+		return
+	}
+
+	imageLink := filePath
+	imgId, err := h.services.FileImage().ImageUpload(
+		context.Background(),
+		&coins_service.ImageData{
+			Id:        uniqueId.String(),
+			ImageLink: imageLink,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file info to database"})
+		return
+	}
+
+	var user_sell users_service.UserSellRequest
+
+	user_sell.UserId = c.PostForm("userId")
+	user_sell.CoinId = c.PostForm("coinId")
+	user_sell.CoinAmount = c.PostForm("coin_amount")
+	user_sell.Message = c.PostForm("message")
+	user_sell.CardNumber = c.PostForm("card_number")
+	user_sell.CheckImg = imgId.Id
 
 	_, err = h.services.UserTransaction().UserSell(
 		c.Request.Context(),
@@ -46,7 +97,7 @@ func (h *Handler) UserSell(c *gin.Context) {
 		return
 	}
 
-	h.handleResponse(c, http.Created, "ok")
+	h.handleResponse(c, http.Created, gin.H{"message": "Transaction created successfully"})
 }
 
 // UserBuy godoc
@@ -57,19 +108,70 @@ func (h *Handler) UserSell(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param profile body users_service.UserBuyRequest true "UserBuyBody"
+// @Param file formData file true "Upload file"
+// @Param userId formData string true "User ID"
+// @Param coinId formData string true "Coin ID"
+// @Param address formData string true "Address"
+// @Param coin_amount formData string true "CoinAmount"
+// @Param message formData string true "Message"
 // @Success 200 {object} http.Response{data=string} "GetUserBuyBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) UserBuy(c *gin.Context) {
 
-	var user_buy users_service.UserBuyRequest
-
-	err := c.ShouldBindJSON(&user_buy)
+	file, err := c.FormFile("file")
 	if err != nil {
-		h.handleResponse(c, http.BadRequest, err.Error())
+		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
 		return
 	}
+
+	ext := filepath.Ext(file.Filename)
+	validFormats := map[string]bool{
+		".jpg":  true,
+		".jpeg": true,
+		".png":  true,
+		".gif":  true,
+	}
+	if !validFormats[ext] {
+		h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid file format"})
+		return
+	}
+
+	err = os.MkdirAll("images/user_buy", os.ModePerm)
+	if err != nil {
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to create uploads directory"})
+		return
+	}
+
+	uniqueId := uuid.New()
+	filename := strings.Replace(uniqueId.String(), "-", "", -1) + ext
+	filePath := filepath.Join("images/user_buy", filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file"})
+		return
+	}
+
+	imageLink := filePath
+	imgId, err := h.services.FileImage().ImageUpload(
+		context.Background(),
+		&coins_service.ImageData{
+			Id:        uniqueId.String(),
+			ImageLink: imageLink,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file info to database"})
+		return
+	}
+
+	var user_buy users_service.UserBuyRequest
+	user_buy.UserId = c.PostForm("userId")
+	user_buy.CoinId = c.PostForm("coinId")
+	user_buy.CoinAmount = c.PostForm("coin_amount")
+	user_buy.Message = c.PostForm("message")
+	user_buy.Address = c.PostForm("address")
+	user_buy.PayImg = imgId.Id
 
 	_, err = h.services.UserTransaction().UserBuy(
 		c.Request.Context(),
@@ -83,346 +185,158 @@ func (h *Handler) UserBuy(c *gin.Context) {
 	h.handleResponse(c, http.Created, "ok")
 }
 
-// UploadUserSellFile godoc
-// @ID UploadUserSellFile
-// @Router /user/image/sell [POST]
-// @Summary UploadUserSellFile
-// @Description  UploadUserSellFile
+// @Security ApiKeyAuth
+// AllUserSell godoc
+// @ID get_transaction_sell_list
+// @Router /user/sell [GET]
+// @Summary Get Transactions List
+// @Description  Get Transactions List
 // @Tags User
-// @Accept multipart/form-data
+// @Accept json
 // @Produce json
-// @Param file formData file true "Upload file"
-// @Success 200 {object} http.Response{data=string} "Success message"
+// @Param offset query integer false "offset"
+// @Param limit query integer false "limit"
+// @Param status query string false "status"
+// @Success 200 {object} http.Response{data=users_service.GetListUserSellTransactionResponse} "GetAllCoinResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) HandleUserSellFileupload(c *gin.Context) {
+func (h *Handler) AllUserSell(c *gin.Context) {
 
-	// Get the uploaded file from the form:
-	file, err := c.FormFile("file")
+	offset, err := h.getOffsetParam(c)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "Unable to get file"})
+		h.handleResponse(c, http.InvalidArgument, err.Error())
 		return
-	}
-	// Check file format
-	ext := filepath.Ext(file.Filename)
-	validFormats := map[string]bool{
-		".jpg":  true,
-		".jpeg": true,
-		".png":  true,
-		".gif":  true,
 	}
 
-	if !validFormats[ext] {
-		c.JSON(400, gin.H{"error": "Invalid file format"})
-		return
-	}
-	// Create the uploads directory if it doesn't exist:
-	err = os.MkdirAll("images/sell", os.ModePerm)
+	limit, err := h.getLimitParam(c)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Unable to create uploads directory"})
+		h.handleResponse(c, http.InvalidArgument, err.Error())
 		return
 	}
 
-	// Generate a unique filename using UUID:
-	uniqueId := uuid.New()
-	filename := strings.Replace(uniqueId.String(), "-", "", -1) + filepath.Ext(file.Filename)
-	filePath := filepath.Join("images/sell", filename)
-	// Save the file to the disk:
-	fmt.Println(filePath)
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		c.JSON(500, gin.H{"error": "Unable to save file"})
-		return
-	}
-	imageLink := filepath.Join("images/buy", strings.Replace(uniqueId.String(), "-", "", -1))
-	_, err = h.services.FileImage().ImageUpload(
+	resp, err := h.services.UserTransaction().AllUserSell(
 		context.Background(),
-		&coins_service.ImageData{
-			Id:        cast.ToString(uniqueId),
-			ImageLink: imageLink,
+		&users_service.GetListUserTransactionRequest{
+			Limit:  int64(limit),
+			Offset: int64(offset),
+			Status: c.Query("status"),
 		},
 	)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Unable to save file info to database"})
+		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "File uploaded successfully"})
+	for i := range resp.UserTransaction {
+		fileName := strings.Replace(resp.UserTransaction[i].CheckImg, "-", "", -1)
+		extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
+
+		var filePath, imageUrl string
+
+		var found bool
+
+		for _, ext := range extensions {
+			potensialPath := fmt.Sprintf("./images/user_sell/%s%s", fileName, ext)
+			link := fmt.Sprintf("user/image/%s%s", fileName, ext)
+			if _, err := os.Stat(potensialPath); err == nil {
+				filePath = potensialPath
+				imageUrl = link
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
+			return
+		}
+
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
+			return
+		}
+
+		fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
+		resp.UserTransaction[i].CheckImg = fileURL
+	}
+
+	h.handleResponse(c, http.OK, resp)
 }
 
-// DeleteUserSellFile godoc
-// @ID delete_image
-// @Router /user/image/sell/{id} [DELETE]
-// @Summary Delete Coin Image
-// @Description Delete Coin Image
+// @Security ApiKeyAuth
+// AllUserBuy godoc
+// @ID get_transaction_by_list
+// @Router /user/buy [GET]
+// @Summary Get Transactions List
+// @Description  Get Transactions List
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param id path string true "id"
-// @Success 200 {object} http.Response{data=object{}} "Success"
-// @Response 400 {object} http.Response{data=string} "Bad Request"
-// @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) HandleUserSellDeleteImage(c *gin.Context) {
-
-	// Get the image name from the URL path
-	imageName := c.Param("id")
-	name := strings.Replace(imageName, "-", "", -1)
-	// Define possible file extensions
-	extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-
-	var filePath string
-	var found bool
-
-	// Iterate through possible extensions
-	for _, ext := range extensions {
-		potentialPath := fmt.Sprintf("./images/sell/%s%s", name, ext)
-		if _, err := os.Stat(potentialPath); err == nil {
-			filePath = potentialPath
-			found = true
-			break
-		}
-	}
-
-	// If no file was found, return an error
-	if !found {
-		c.JSON(400, gin.H{"error": "File not found"})
-		return
-	}
-
-	// Attempt to remove the file
-	err := os.Remove(filePath)
-	if err != nil {
-		c.JSON(500, gin.H{"error": "Server Error", "details": err.Error()})
-		return
-	}
-	_, err = h.services.FileImage().ImageDelete(context.Background(), &coins_service.ImagePrimaryKey{Id: imageName})
-	if err != nil {
-		c.JSON(500, gin.H{"error": "Server Error", "details": err.Error()})
-		return
-	}
-	// Return success response
-	c.JSON(200, gin.H{"message": "Image deleted successfully"})
-}
-
-// GetFileURL godoc
-// @ID get_user_sell_file_url
-// @Router /user/image/sell/{id} [GET]
-// @Summary Get User Sell Image URL
-// @Description Retrieve the URL for a specific user sell image
-// @Tags User
-// @Accept json
-// @Produce json
-// @Param id path string true "Image ID"
-// @Success 200 {object} http.Response{data=string} "Success"
-// @Response 400 {object} http.Response{data=string} "Bad Request"
-// @Response 404 {object} http.Response{data=string} "File not found"
-// @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetUserSellFileURL(c *gin.Context) {
-	fileName := c.Param("id")
-	fileName = strings.Replace(fileName, "-", "", -1)
-	extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-
-	var filePath, imageUrl string
-	var found bool
-
-	// Iterate through possible extensions
-	for _, ext := range extensions {
-		potentialPath := fmt.Sprintf("./images/sell/%s%s", fileName, ext)
-		link := fmt.Sprintf("user/image/sell/%s%s", fileName, ext)
-		if _, err := os.Stat(potentialPath); err == nil {
-			filePath = potentialPath
-			imageUrl = link
-			found = true
-			break
-		}
-	}
-	// If no file was found, return an error
-	if !found {
-		c.JSON(400, gin.H{"error": "File type not found"})
-		return
-	}
-	fmt.Println(filePath)
-
-	// Faylning mavjudligini tekshirish
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		c.JSON(404, gin.H{"error": "File not found"})
-		return
-	}
-
-	// Fayl URL'sini yaratish
-	fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
-
-	// URL'ni frontendga qaytarish
-	c.JSON(200, gin.H{"file_url": fileURL})
-}
-
-// UploadUserBuyFile godoc
-// @ID UploadUserBuyFile
-// @Router /user/image/buy [POST]
-// @Summary UploadUserBuyFile
-// @Description  UploadUserBuyFile
-// @Tags User
-// @Accept multipart/form-data
-// @Produce json
-// @Param file formData file true "Upload file"
-// @Success 200 {object} http.Response{data=string} "Success message"
+// @Param offset query integer false "offset"
+// @Param limit query integer false "limit"
+// @Param status query string false "status"
+// @Success 200 {object} http.Response{data=users_service.GetListUserBuyTransactionResponse} "GetAllCoinResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) HandleUserBuyFileupload(c *gin.Context) {
+func (h *Handler) AllUserBuy(c *gin.Context) {
 
-	// Get the uploaded file from the form:
-	file, err := c.FormFile("file")
+	offset, err := h.getOffsetParam(c)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "Unable to get file"})
+		h.handleResponse(c, http.InvalidArgument, err.Error())
 		return
-	}
-	// Check file format
-	ext := filepath.Ext(file.Filename)
-	validFormats := map[string]bool{
-		".jpg":  true,
-		".jpeg": true,
-		".png":  true,
-		".gif":  true,
 	}
 
-	if !validFormats[ext] {
-		c.JSON(400, gin.H{"error": "Invalid file format"})
-		return
-	}
-	// Create the uploads directory if it doesn't exist:
-	err = os.MkdirAll("images/buy", os.ModePerm)
+	limit, err := h.getLimitParam(c)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Unable to create uploads directory"})
+		h.handleResponse(c, http.InvalidArgument, err.Error())
 		return
 	}
 
-	// Generate a unique filename using UUID:
-	uniqueId := uuid.New()
-	filename := strings.Replace(uniqueId.String(), "-", "", -1) + filepath.Ext(file.Filename)
-	filePath := filepath.Join("images/buy", filename)
-	// Save the file to the disk:
-	fmt.Println(filePath)
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		c.JSON(500, gin.H{"error": "Unable to save file"})
-		return
-	}
-	imageLink := filepath.Join("images/buy", strings.Replace(uniqueId.String(), "-", "", -1))
-	_, err = h.services.FileImage().ImageUpload(
+	resp, err := h.services.UserTransaction().AllUserBuy(
 		context.Background(),
-		&coins_service.ImageData{
-			Id:        cast.ToString(uniqueId),
-			ImageLink: imageLink,
+		&users_service.GetListUserTransactionRequest{
+			Limit:  int64(limit),
+			Offset: int64(offset),
+			Status: c.Query("status"),
 		},
 	)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Unable to save file info to database"})
+		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "File uploaded successfully"})
-}
+	for i := range resp.UserTransaction {
+		fileName := strings.Replace(resp.UserTransaction[i].CheckImg, "-", "", -1)
+		extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
 
-// DeleteUserBuyFile godoc
-// @ID delete_image
-// @Router /user/image/buy/{id} [DELETE]
-// @Summary Delete User Buy Image
-// @Description Delete User Buy Image
-// @Tags User
-// @Accept json
-// @Produce json
-// @Param id path string true "id"
-// @Success 200 {object} http.Response{data=object{}} "Success"
-// @Response 400 {object} http.Response{data=string} "Bad Request"
-// @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) HandleUserBuyDeleteImage(c *gin.Context) {
+		var filePath, imageUrl string
 
-	// Get the image name from the URL path
-	imageName := c.Param("id")
-	name := strings.Replace(imageName, "-", "", -1)
-	// Define possible file extensions
-	extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
+		var found bool
 
-	var filePath string
-	var found bool
-
-	// Iterate through possible extensions
-	for _, ext := range extensions {
-		potentialPath := fmt.Sprintf("./images/buy/%s%s", name, ext)
-		if _, err := os.Stat(potentialPath); err == nil {
-			filePath = potentialPath
-			found = true
-			break
+		for _, ext := range extensions {
+			potensialPath := fmt.Sprintf("./images/user_buy/%s%s", fileName, ext)
+			link := fmt.Sprintf("user/image/%s%s", fileName, ext)
+			if _, err := os.Stat(potensialPath); err == nil {
+				filePath = potensialPath
+				imageUrl = link
+				found = true
+				break
+			}
 		}
-	}
 
-	// If no file was found, return an error
-	if !found {
-		c.JSON(400, gin.H{"error": "File not found"})
-		return
-	}
-
-	// Attempt to remove the file
-	err := os.Remove(filePath)
-	if err != nil {
-		c.JSON(500, gin.H{"error": "Server Error", "details": err.Error()})
-		return
-	}
-	_, err = h.services.FileImage().ImageDelete(context.Background(), &coins_service.ImagePrimaryKey{Id: imageName})
-	if err != nil {
-		c.JSON(500, gin.H{"error": "Server Error", "details": err.Error()})
-		return
-	}
-	// Return success response
-	c.JSON(200, gin.H{"message": "Image deleted successfully"})
-}
-
-// GetFileURL godoc
-// @ID get_user_buy_file_url
-// @Router /user/image/buy/{id} [GET]
-// @Summary Get User Buy Image URL
-// @Description Retrieve the URL for a specific user buy image
-// @Tags User
-// @Accept json
-// @Produce json
-// @Param id path string true "Image ID"
-// @Success 200 {object} http.Response{data=string} "Success"
-// @Response 400 {object} http.Response{data=string} "Bad Request"
-// @Response 404 {object} http.Response{data=string} "File not found"
-// @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetUserBuyFileURL(c *gin.Context) {
-	fileName := c.Param("id")
-	fileName = strings.Replace(fileName, "-", "", -1)
-	extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-
-	var filePath, imageUrl string
-	var found bool
-
-	// Iterate through possible extensions
-	for _, ext := range extensions {
-		potentialPath := fmt.Sprintf("./images/buy/%s%s", fileName, ext)
-		link := fmt.Sprintf("user/image/buy/%s%s", fileName, ext)
-		if _, err := os.Stat(potentialPath); err == nil {
-			filePath = potentialPath
-			imageUrl = link
-			found = true
-			break
+		if !found {
+			h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
+			return
 		}
-	}
-	// If no file was found, return an error
-	if !found {
-		c.JSON(400, gin.H{"error": "File type not found"})
-		return
-	}
-	fmt.Println(filePath)
 
-	// Faylning mavjudligini tekshirish
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		c.JSON(404, gin.H{"error": "File not found"})
-		return
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
+			return
+		}
+
+		fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
+		resp.UserTransaction[i].CheckImg = fileURL
 	}
 
-	// Fayl URL'sini yaratish
-	fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
-
-	// URL'ni frontendga qaytarish
-	c.JSON(200, gin.H{"file_url": fileURL})
+	h.handleResponse(c, http.OK, resp)
 }

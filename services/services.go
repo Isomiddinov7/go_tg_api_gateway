@@ -15,6 +15,7 @@ type ServiceManagerI interface {
 	FileImage() coins_service.ImagesServiceClient
 	UserService() users_service.UserServiceClient
 	UserTransaction() users_service.UserSellOrBuyServiceClient
+	Messages() users_service.UserMessageListClient
 }
 
 type grpcClients struct {
@@ -23,6 +24,7 @@ type grpcClients struct {
 	buyorsaleService       coins_service.BuyOrSellClient
 	fileimageService       coins_service.ImagesServiceClient
 	usertransactionService users_service.UserSellOrBuyServiceClient
+	messageService         users_service.UserMessageListClient
 }
 
 func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
@@ -50,6 +52,7 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 		fileimageService:       coins_service.NewImagesServiceClient(connCoinService),
 		userService:            users_service.NewUserServiceClient(connUserService),
 		usertransactionService: users_service.NewUserSellOrBuyServiceClient(connUserService),
+		messageService:         users_service.NewUserMessageListClient(connUserService),
 	}, nil
 }
 
@@ -71,4 +74,8 @@ func (g *grpcClients) UserService() users_service.UserServiceClient {
 
 func (g *grpcClients) UserTransaction() users_service.UserSellOrBuyServiceClient {
 	return g.usertransactionService
+}
+
+func (g *grpcClients) Messages() users_service.UserMessageListClient {
+	return g.messageService
 }
