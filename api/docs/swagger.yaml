@@ -409,7 +409,7 @@ paths:
       summary: Get Admin Message  By ID
       tags:
       - Admin Message
-  /buy:
+  /coin-service/buy:
     post:
       consumes:
       - application/json
@@ -455,7 +455,7 @@ paths:
       summary: Get Buy
       tags:
       - Buy
-  /coin:
+  /coin-service/coin:
     get:
       consumes:
       - application/json
@@ -588,7 +588,7 @@ paths:
       summary: Create Coin
       tags:
       - Coin
-  /coin/{id}:
+  /coin-service/coin/{id}:
     delete:
       consumes:
       - application/json
@@ -727,6 +727,52 @@ paths:
       summary: Update Coin
       tags:
       - Coin
+  /coin-service/sell:
+    post:
+      consumes:
+      - application/json
+      description: Get Sell
+      operationId: get_sell
+      parameters:
+      - description: BuyOrSellRequest
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/coins_service.BuyOrSellRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: SellBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.BuyOrSellResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Sell
+      tags:
+      - Sell
   /message/{id}:
     put:
       consumes:
@@ -778,52 +824,6 @@ paths:
       summary: Update Message
       tags:
       - Message
-  /sell:
-    post:
-      consumes:
-      - application/json
-      description: Get Sell
-      operationId: get_sell
-      parameters:
-      - description: BuyOrSellRequest
-        in: body
-        name: profile
-        required: true
-        schema:
-          $ref: '#/definitions/coins_service.BuyOrSellRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: SellBody
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/coins_service.BuyOrSellResponse'
-              type: object
-        "400":
-          description: Invalid Argument
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Get Sell
-      tags:
-      - Sell
   /user:
     get:
       consumes:

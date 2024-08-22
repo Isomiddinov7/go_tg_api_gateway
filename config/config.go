@@ -50,9 +50,9 @@ func Load() Config {
 	config.Version = cast.ToString(getOrReturnDefaultValue("VERSION", "1.0"))
 
 	config.ServiceHost = cast.ToString(getOrReturnDefaultValue("SERVICE_HOST", "localhost"))
-	config.HTTPPort = cast.ToString(getOrReturnDefaultValue("HTTP_PORT", ":8080"))
-	config.HTTPScheme = cast.ToString(getOrReturnDefaultValue("HTTP_SCHEME", "http"))
-	config.Domain = cast.ToString(getOrReturnDefaultValue("DOMAIN", "localhost:8080"))
+	config.HTTPPort = cast.ToString(getOrReturnDefaultValue("HTTP_PORT", ":8081"))
+	config.HTTPScheme = cast.ToString(getOrReturnDefaultValue("HTTP_SCHEME", "https"))
+	config.Domain = cast.ToString(getOrReturnDefaultValue("DOMAIN", "localhost:8081"))
 
 	config.DefaultOffset = cast.ToString(getOrReturnDefaultValue("DEFAULT_OFFSET", "0"))
 	config.DefaultLimit = cast.ToString(getOrReturnDefaultValue("DEFAULT_LIMIT", "10"))

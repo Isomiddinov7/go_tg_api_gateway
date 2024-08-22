@@ -10,7 +10,7 @@ import (
 
 // GetSell godoc
 // @ID get_sell
-// @Router /sell [POST]
+// @Router /coin-service/sell [POST]
 // @Summary Get Sell
 // @Description Get Sell
 // @Tags Sell
@@ -49,7 +49,7 @@ func (h *Handler) GetSell(c *gin.Context) {
 
 // GetBuy godoc
 // @ID get_buy
-// @Router /buy [POST]
+// @Router /coin-service/buy [POST]
 // @Summary Get Buy
 // @Description Get Buy
 // @Tags Buy

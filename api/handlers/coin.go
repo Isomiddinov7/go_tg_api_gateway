@@ -17,7 +17,7 @@ import (
 
 // CreateCoin godoc
 // @ID create_coin
-// @Router /coin [POST]
+// @Router /coin-service/coin [POST]
 // @Summary Create Coin
 // @Description  Create Coin
 // @Tags Coin
@@ -113,7 +113,7 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 
 // GetCoinByID godoc
 // @ID get_coin_by_id
-// @Router /coin/{id} [GET]
+// @Router /coin-service/coin/{id} [GET]
 // @Summary Get Coin  By ID
 // @Description Get Coin  By ID
 // @Tags Coin
@@ -175,7 +175,7 @@ func (h *Handler) GetCoinByID(c *gin.Context) {
 // @Security ApiKeyAuth
 // GetCoinList godoc
 // @ID get_coin_list
-// @Router /coin [GET]
+// @Router /coin-service/coin [GET]
 // @Summary Get Coins List
 // @Description  Get Coins List
 // @Tags Coin
@@ -252,7 +252,7 @@ func (h *Handler) GetCoinList(c *gin.Context) {
 
 // UpdateCoin godoc
 // @ID update_coin
-// @Router /coin/{id} [PUT]
+// @Router /coin-service/coin/{id} [PUT]
 // @Summary Update Coin
 // @Description Update Coin
 // @Tags Coin
@@ -292,7 +292,7 @@ func (h *Handler) UpdateCoin(c *gin.Context) {
 
 // DeleteCoin godoc
 // @ID delete_coin
-// @Router /coin/{id} [DELETE]
+// @Router /coin-service/coin/{id} [DELETE]
 // @Summary Delete Coin
 // @Description Delete Coin
 // @Tags Coin
