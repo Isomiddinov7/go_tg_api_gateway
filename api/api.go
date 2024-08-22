@@ -29,15 +29,15 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	// r.POST("/login", h.Login)
 
 	// COIN
-	r.POST("/coin", h.CreateCoin)
-	r.GET("/coin/:id", h.GetCoinByID)
-	r.GET("/coin", h.GetCoinList)
-	r.PUT("/coin/:id", h.UpdateCoin)
-	r.DELETE("/coin/:id", h.DeleteCoin)
+	r.POST("/coin-service/coin", h.CreateCoin)
+	r.GET("/coin-service/coin/:id", h.GetCoinByID)
+	r.GET("/coin-service/coin", h.GetCoinList)
+	r.PUT("/coin-service/coin/:id", h.UpdateCoin)
+	r.DELETE("/coin-service/coin/:id", h.DeleteCoin)
 
 	//Buy Or Sale
-	r.POST("/sell", h.GetSell)
-	r.POST("/buy", h.GetBuy)
+	r.POST("/coin-service/sell", h.GetSell)
+	r.POST("/coin-service/buy", h.GetBuy)
 
 	// USER
 	r.POST("/user", h.CreateUser)
