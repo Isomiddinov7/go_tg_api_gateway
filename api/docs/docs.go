@@ -262,7 +262,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/coin-service/buy": {
+        "/buy": {
             "post": {
                 "description": "Get Buy",
                 "consumes": [
@@ -345,7 +345,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/coin-service/coin": {
+        "/coin": {
             "get": {
                 "security": [
                     {
@@ -570,7 +570,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/coin-service/coin/{id}": {
+        "/coin/{id}": {
             "get": {
                 "description": "Get Coin  By ID",
                 "consumes": [
@@ -818,89 +818,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/coin-service/sell": {
-            "post": {
-                "description": "Get Sell",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Sell"
-                ],
-                "summary": "Get Sell",
-                "operationId": "get_sell",
-                "parameters": [
-                    {
-                        "description": "BuyOrSellRequest",
-                        "name": "profile",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/coins_service.BuyOrSellRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "SellBody",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/coins_service.BuyOrSellResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid Argument",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "Server Error",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
         "/message/{id}": {
             "put": {
                 "description": "Update Message",
@@ -954,6 +871,89 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/sell": {
+            "post": {
+                "description": "Get Sell",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sell"
+                ],
+                "summary": "Get Sell",
+                "operationId": "get_sell",
+                "parameters": [
+                    {
+                        "description": "BuyOrSellRequest",
+                        "name": "profile",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/coins_service.BuyOrSellRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SellBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/coins_service.BuyOrSellResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
                         "schema": {
                             "allOf": [
                                 {
