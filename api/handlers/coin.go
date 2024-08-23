@@ -202,7 +202,7 @@ func (h *Handler) GetCoinList(c *gin.Context) {
 	}
 
 	resp, err := h.services.CoinService().GetList(
-		context.Background(),
+		c.Request.Context(),
 		&coins_service.GetListCoinRequest{
 			Limit:  int64(limit),
 			Offset: int64(offset),
@@ -246,7 +246,7 @@ func (h *Handler) GetCoinList(c *gin.Context) {
 		fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
 		resp.Coins[i].ImageId = fileURL
 	}
-
+	fmt.Println(resp)
 	h.handleResponse(c, http.OK, resp)
 }
 
