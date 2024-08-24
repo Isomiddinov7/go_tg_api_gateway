@@ -256,7 +256,7 @@ func (h *Handler) AllUserSell(c *gin.Context) {
 			return
 		}
 
-		fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
+		fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
 		resp.UserTransaction[i].CheckImg = fileURL
 	}
 
@@ -334,7 +334,7 @@ func (h *Handler) AllUserBuy(c *gin.Context) {
 			return
 		}
 
-		fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
+		fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
 		resp.UserTransaction[i].CheckImg = fileURL
 	}
 

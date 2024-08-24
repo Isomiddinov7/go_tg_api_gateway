@@ -268,7 +268,7 @@ func (h *Handler) GetUserMessage(c *gin.Context) {
 				h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
 				return
 			}
-			fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
+			fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
 			resp.Messages[i].File = fileURL
 		}
 	}
@@ -326,7 +326,7 @@ func (h *Handler) GetAdminAllMessage(c *gin.Context) {
 				h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
 				return
 			}
-			fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
+			fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
 			resp.AdminMessage[i].File = fileURL
 		}
 	}
@@ -394,8 +394,76 @@ func (h *Handler) GetAdminMessage(c *gin.Context) {
 				h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
 				return
 			}
-			fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
+			fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
 			resp.Messages[i].File = fileURL
+		}
+	}
+	h.handleResponse(c, http.OK, resp)
+
+}
+
+// GetMessageAdminID godoc
+// @ID get_message_admin_id
+// @Router /admin/message/user/{id} [GET]
+// @Summary Get Admin Message  By ID
+// @Description Get Admin Message  By ID
+// @Tags Admin Message
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Success 200 {object} http.Response{data=users_service.GetMessageUserResponse} "UserMessageBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetMessageAdminID(c *gin.Context) {
+	user_id := c.Param("id")
+	if !util.IsValidUUID(user_id) {
+		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
+		return
+	}
+
+	resp, err := h.services.Messages().GetMessageAdminID(
+		context.Background(),
+		&users_service.GetMessageUserRequest{
+			UserId: user_id,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+	for i := range resp.Message {
+		if resp.Message[i].File == "" {
+			continue
+		} else {
+
+			fileName := strings.Replace(resp.Message[i].File, "-", "", -1)
+			extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
+			var (
+				filePath, imageUrl string
+				found              bool
+			)
+
+			for _, ext := range extensions {
+				potensialPath := fmt.Sprintf("./images/messages/%s%s", fileName, ext)
+				link := fmt.Sprintf("messages/image/%s%s", fileName, ext)
+				if _, err := os.Stat(potensialPath); err == nil {
+					filePath = potensialPath
+					imageUrl = link
+					found = true
+					break
+				}
+			}
+			if !found {
+				h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
+				return
+			}
+			if _, err := os.Stat(filePath); os.IsNotExist(err) {
+				h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
+				return
+			}
+			fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
+			resp.File = fileURL
+			resp.Message[i].File = fileURL
 		}
 	}
 	h.handleResponse(c, http.OK, resp)

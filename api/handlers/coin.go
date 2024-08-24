@@ -167,7 +167,7 @@ func (h *Handler) GetCoinByID(c *gin.Context) {
 		return
 	}
 
-	fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
+	fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
 	resp.ImageId = fileURL
 	h.handleResponse(c, http.OK, resp)
 }
@@ -243,7 +243,7 @@ func (h *Handler) GetCoinList(c *gin.Context) {
 			return
 		}
 
-		fileURL := fmt.Sprintf("http://localhost:8080/%s", imageUrl)
+		fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
 		resp.Coins[i].ImageId = fileURL
 	}
 	fmt.Println(resp)

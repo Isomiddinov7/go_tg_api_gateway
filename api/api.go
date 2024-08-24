@@ -58,6 +58,7 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.GET("/user/message/:id", h.GetUserMessage)
 	r.GET("/admin/message", h.GetAdminAllMessage)
 	r.GET("/admin/message/:id", h.GetUserMessage)
+	r.GET("/admin/message/user/:id", h.GetMessageAdminID)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

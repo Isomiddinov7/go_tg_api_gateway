@@ -84,5 +84,3 @@ func (h *Handler) GetBuy(c *gin.Context) {
 
 	h.handleResponse(c, http.OK, resp)
 }
-
-

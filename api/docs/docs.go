@@ -181,6 +181,87 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/message/user/{id}": {
+            "get": {
+                "description": "Get Admin Message  By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Message"
+                ],
+                "summary": "Get Admin Message  By ID",
+                "operationId": "get_message_admin_id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "UserMessageBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/users_service.GetMessageUserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/admin/message/{id}": {
             "get": {
                 "description": "Get Admin Message  By ID",
@@ -2099,6 +2180,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "last_message": {
+                    "type": "string"
+                },
+                "last_name": {
                     "type": "string"
                 },
                 "message_count": {
