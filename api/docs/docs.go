@@ -589,8 +589,7 @@ const docTemplate = `{
                         "type": "array",
                         "description": "coins_service.CreateCoin.HalfCoinPrice",
                         "name": "halfcoins",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     }
                 ],
                 "responses": {

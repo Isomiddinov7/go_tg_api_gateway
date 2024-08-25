@@ -30,7 +30,7 @@ import (
 // @Param address formData string true "Address"
 // @Param card_number formData string true "Card Number"
 // @Param status formData string true "Status"
-// @Param halfcoins formData array true "coins_service.CreateCoin.HalfCoinPrice" items.schema.type=object items.schema.$ref="#/definitions/HalfCoinPrice"
+// @Param halfcoins formData array false "coins_service.CreateCoin.HalfCoinPrice" items.schema.type=object items.schema.$ref="#/definitions/HalfCoinPrice"
 // @Success 200 {object} http.Response{data=coins_service.Coin} "GetCoinBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"

@@ -600,7 +600,6 @@ paths:
       - description: coins_service.CreateCoin.HalfCoinPrice
         in: formData
         name: halfcoins
-        required: true
         type: array
       produces:
       - application/json
