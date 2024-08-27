@@ -62,6 +62,36 @@ definitions:
       halfCoinPrice:
         type: string
     type: object
+  coins_service.HistoriesUser:
+    properties:
+      address:
+        type: string
+      all_price:
+        type: string
+      card_number:
+        type: string
+      coin_amount:
+        type: string
+      coin_img:
+        type: string
+      coin_price:
+        type: string
+      date_time:
+        type: string
+      id:
+        type: string
+      status:
+        type: string
+    type: object
+  coins_service.HistoryUserResponse:
+    properties:
+      count:
+        type: integer
+      histories:
+        items:
+          $ref: '#/definitions/coins_service.HistoriesUser'
+        type: array
+    type: object
   coins_service.UpdateCoin:
     properties:
       address:
@@ -121,6 +151,13 @@ definitions:
       status:
         type: string
       username:
+        type: string
+    type: object
+  users_service.Credentials:
+    properties:
+      login:
+        type: string
+      password:
         type: string
     type: object
   users_service.GetListUserBuyTransactionResponse:
@@ -273,7 +310,53 @@ definitions:
 info:
   contact: {}
 paths:
-  /admin/message:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: login
+      operationId: login
+      parameters:
+      - description: LoginRequestBody
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/users_service.Credentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: login
+      tags:
+      - Admin
+  /v1/admin/message:
     post:
       consumes:
       - multipart/form-data
@@ -326,8 +409,8 @@ paths:
               type: object
       summary: Create Message
       tags:
-      - Message
-  /admin/message/:
+      - Admin
+  /v1/admin/message/:
     get:
       consumes:
       - application/json
@@ -366,7 +449,7 @@ paths:
       summary: Get Admin Message  By ID
       tags:
       - Admin Message
-  /admin/message/{id}:
+  /v1/admin/message/{id}:
     get:
       consumes:
       - application/json
@@ -411,7 +494,7 @@ paths:
       summary: Get Admin Message  By ID
       tags:
       - Admin Message
-  /admin/message/user/{id}:
+  /v1/admin/message/user/{id}:
     get:
       consumes:
       - application/json
@@ -456,7 +539,7 @@ paths:
       summary: Get Admin Message  By ID
       tags:
       - Admin Message
-  /buy:
+  /v1/buy:
     post:
       consumes:
       - application/json
@@ -502,7 +585,7 @@ paths:
       summary: Get Buy
       tags:
       - Buy
-  /coin:
+  /v1/coin:
     get:
       consumes:
       - application/json
@@ -634,7 +717,7 @@ paths:
       summary: Create Coin
       tags:
       - Coin
-  /coin/{id}:
+  /v1/coin/{id}:
     delete:
       consumes:
       - application/json
@@ -773,7 +856,54 @@ paths:
       summary: Update Coin
       tags:
       - Coin
-  /message/{id}:
+  /v1/history/user:
+    get:
+      consumes:
+      - application/json
+      description: Get History Users List
+      operationId: get_history_user_list
+      parameters:
+      - description: user_id
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetHistoryUserResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.HistoryUserResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get History Users List
+      tags:
+      - History
+  /v1/message/{id}:
     put:
       consumes:
       - application/json
@@ -824,7 +954,7 @@ paths:
       summary: Update Message
       tags:
       - Message
-  /sell:
+  /v1/sell:
     post:
       consumes:
       - application/json
@@ -870,7 +1000,7 @@ paths:
       summary: Get Sell
       tags:
       - Sell
-  /user:
+  /v1/user:
     get:
       consumes:
       - application/json
@@ -888,12 +1018,6 @@ paths:
       - description: search
         in: query
         name: search
-        type: string
-      - default: a1924766-a9ee-11ed-afa1-0242ac120001
-        description: Platform-Id
-        in: header
-        name: Platform-Id
-        required: true
         type: string
       produces:
       - application/json
@@ -975,7 +1099,7 @@ paths:
       summary: Create User
       tags:
       - User
-  /user/{id}:
+  /v1/user/{id}:
     get:
       consumes:
       - application/json
@@ -1070,7 +1194,7 @@ paths:
       summary: Update User
       tags:
       - User
-  /user/buy:
+  /v1/user/buy:
     get:
       consumes:
       - application/json
@@ -1193,7 +1317,7 @@ paths:
       summary: UserBuy
       tags:
       - User
-  /user/message:
+  /v1/user/message:
     post:
       consumes:
       - multipart/form-data
@@ -1246,8 +1370,8 @@ paths:
               type: object
       summary: Create Message
       tags:
-      - Message
-  /user/message/{id}:
+      - User
+  /v1/user/message/{id}:
     get:
       consumes:
       - application/json
@@ -1292,7 +1416,7 @@ paths:
       summary: Get User Message  By ID
       tags:
       - User Message
-  /user/sell:
+  /v1/user/sell:
     get:
       consumes:
       - application/json

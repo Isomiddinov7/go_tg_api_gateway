@@ -17,10 +17,10 @@ import (
 
 // CreateMessage godoc
 // @ID create_user_message
-// @Router /user/message [POST]
+// @Router /v1/user/message [POST]
 // @Summary Create Message
 // @Description  Create Message
-// @Tags Message
+// @Tags User
 // @Accept multipart/form-data
 // @Produce json
 // @Param file formData file false "Upload file"
@@ -95,10 +95,10 @@ func (h *Handler) CreateUserMessage(c *gin.Context) {
 
 // CreateMessage godoc
 // @ID create_admin_message
-// @Router /admin/message [POST]
+// @Router /v1/admin/message [POST]
 // @Summary Create Message
 // @Description  Create Message
-// @Tags Message
+// @Tags Admin
 // @Accept multipart/form-data
 // @Produce json
 // @Param file formData file false "Upload file"
@@ -172,7 +172,7 @@ func (h *Handler) CreateAdminMessage(c *gin.Context) {
 
 // UpdateMessage godoc
 // @ID update_message
-// @Router /message/{id} [PUT]
+// @Router /v1/message/{id} [PUT]
 // @Summary Update Message
 // @Description Update Message
 // @Tags Message
@@ -212,7 +212,7 @@ func (h *Handler) UpdateMessage(c *gin.Context) {
 
 // GetUserMessageByID godoc
 // @ID get_user_message_by_id
-// @Router /user/message/{id} [GET]
+// @Router /v1/user/message/{id} [GET]
 // @Summary Get User Message  By ID
 // @Description Get User Message  By ID
 // @Tags User Message
@@ -278,7 +278,7 @@ func (h *Handler) GetUserMessage(c *gin.Context) {
 
 // GetUserMessageByID godoc
 // @ID get_admin_all_message_by_id
-// @Router /admin/message/ [GET]
+// @Router /v1/admin/message/ [GET]
 // @Summary Get Admin Message  By ID
 // @Description Get Admin Message  By ID
 // @Tags Admin Message
@@ -337,7 +337,7 @@ func (h *Handler) GetAdminAllMessage(c *gin.Context) {
 
 // GetAdminMessageByID godoc
 // @ID get_admin_message_by_id
-// @Router /admin/message/{id} [GET]
+// @Router /v1/admin/message/{id} [GET]
 // @Summary Get Admin Message  By ID
 // @Description Get Admin Message  By ID
 // @Tags Admin Message
@@ -404,7 +404,7 @@ func (h *Handler) GetAdminMessage(c *gin.Context) {
 
 // GetMessageAdminID godoc
 // @ID get_message_admin_id
-// @Router /admin/message/user/{id} [GET]
+// @Router /v1/admin/message/user/{id} [GET]
 // @Summary Get Admin Message  By ID
 // @Description Get Admin Message  By ID
 // @Tags Admin Message

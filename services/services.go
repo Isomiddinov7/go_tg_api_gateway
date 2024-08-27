@@ -16,6 +16,8 @@ type ServiceManagerI interface {
 	UserService() users_service.UserServiceClient
 	UserTransaction() users_service.UserSellOrBuyServiceClient
 	Messages() users_service.UserMessageListClient
+	Auth() users_service.AuthServiceClient
+	History() coins_service.HistoryServiceClient
 }
 
 type grpcClients struct {
@@ -25,6 +27,8 @@ type grpcClients struct {
 	fileimageService       coins_service.ImagesServiceClient
 	usertransactionService users_service.UserSellOrBuyServiceClient
 	messageService         users_service.UserMessageListClient
+	auth                   users_service.AuthServiceClient
+	history                coins_service.HistoryServiceClient
 }
 
 func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
@@ -53,6 +57,8 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 		userService:            users_service.NewUserServiceClient(connUserService),
 		usertransactionService: users_service.NewUserSellOrBuyServiceClient(connUserService),
 		messageService:         users_service.NewUserMessageListClient(connUserService),
+		auth:                   users_service.NewAuthServiceClient(connUserService),
+		history:                coins_service.NewHistoryServiceClient(connCoinService),
 	}, nil
 }
 
@@ -78,4 +84,12 @@ func (g *grpcClients) UserTransaction() users_service.UserSellOrBuyServiceClient
 
 func (g *grpcClients) Messages() users_service.UserMessageListClient {
 	return g.messageService
+}
+
+func (g *grpcClients) Auth() users_service.AuthServiceClient {
+	return g.auth
+}
+
+func (g *grpcClients) History() coins_service.HistoryServiceClient {
+	return g.history
 }

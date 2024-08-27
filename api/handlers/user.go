@@ -11,7 +11,7 @@ import (
 
 // CreateUser godoc
 // @ID create_user
-// @Router /user [POST]
+// @Router /v1/user [POST]
 // @Summary Create User
 // @Description  Create User
 // @Tags User
@@ -46,7 +46,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 
 // GetUserByID godoc
 // @ID get_user_by_id
-// @Router /user/{id} [GET]
+// @Router /v1/user/{id} [GET]
 // @Summary Get User  By ID
 // @Description Get User  By ID
 // @Tags User
@@ -83,7 +83,7 @@ func (h *Handler) GetUserByID(c *gin.Context) {
 // @Security ApiKeyAuth
 // GetUserList godoc
 // @ID get_user_list
-// @Router /user [GET]
+// @Router /v1/user [GET]
 // @Summary Get Users List
 // @Description  Get Users List
 // @Tags User
@@ -92,7 +92,6 @@ func (h *Handler) GetUserByID(c *gin.Context) {
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
 // @Param search query string false "search"
-// @Param Platform-Id header string true "Platform-Id" default(a1924766-a9ee-11ed-afa1-0242ac120001)
 // @Success 200 {object} http.Response{data=users_service.GetListUserResponse} "GetAllUserResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
@@ -129,7 +128,7 @@ func (h *Handler) GetUserList(c *gin.Context) {
 
 // UpdateUser godoc
 // @ID update_user
-// @Router /user/{id} [PUT]
+// @Router /v1/user/{id} [PUT]
 // @Summary Update User
 // @Description Update User
 // @Tags User

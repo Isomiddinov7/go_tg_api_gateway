@@ -16,7 +16,7 @@ import (
 
 // UserSell godoc
 // @ID User_sell
-// @Router /user/sell [POST]
+// @Router /v1/user/sell [POST]
 // @Summary UserSell
 // @Description  UserSell
 // @Tags User
@@ -102,7 +102,7 @@ func (h *Handler) UserSell(c *gin.Context) {
 
 // UserBuy godoc
 // @ID User_buy
-// @Router /user/buy [POST]
+// @Router /v1/user/buy [POST]
 // @Summary UserBuy
 // @Description  UserBuy
 // @Tags User
@@ -188,7 +188,7 @@ func (h *Handler) UserBuy(c *gin.Context) {
 // @Security ApiKeyAuth
 // AllUserSell godoc
 // @ID get_transaction_sell_list
-// @Router /user/sell [GET]
+// @Router /v1/user/sell [GET]
 // @Summary Get Transactions List
 // @Description  Get Transactions List
 // @Tags User
@@ -266,7 +266,7 @@ func (h *Handler) AllUserSell(c *gin.Context) {
 // @Security ApiKeyAuth
 // AllUserBuy godoc
 // @ID get_transaction_by_list
-// @Router /user/buy [GET]
+// @Router /v1/user/buy [GET]
 // @Summary Get Transactions List
 // @Description  Get Transactions List
 // @Tags User

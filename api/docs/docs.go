@@ -15,7 +15,90 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/message": {
+        "/login": {
+            "post": {
+                "description": "login",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "login",
+                "operationId": "login",
+                "parameters": [
+                    {
+                        "description": "LoginRequestBody",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/users_service.Credentials"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/admin/message": {
             "post": {
                 "description": "Create Message",
                 "consumes": [
@@ -25,7 +108,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Message"
+                    "Admin"
                 ],
                 "summary": "Create Message",
                 "operationId": "create_admin_message",
@@ -109,7 +192,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/message/": {
+        "/v1/admin/message/": {
             "get": {
                 "description": "Get Admin Message  By ID",
                 "consumes": [
@@ -181,7 +264,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/message/user/{id}": {
+        "/v1/admin/message/user/{id}": {
             "get": {
                 "description": "Get Admin Message  By ID",
                 "consumes": [
@@ -262,7 +345,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/message/{id}": {
+        "/v1/admin/message/{id}": {
             "get": {
                 "description": "Get Admin Message  By ID",
                 "consumes": [
@@ -343,7 +426,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/buy": {
+        "/v1/buy": {
             "post": {
                 "description": "Get Buy",
                 "consumes": [
@@ -426,7 +509,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/coin": {
+        "/v1/coin": {
             "get": {
                 "security": [
                     {
@@ -650,7 +733,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/coin/{id}": {
+        "/v1/coin/{id}": {
             "get": {
                 "description": "Get Coin  By ID",
                 "consumes": [
@@ -898,7 +981,93 @@ const docTemplate = `{
                 }
             }
         },
-        "/message/{id}": {
+        "/v1/history/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get History Users List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "History"
+                ],
+                "summary": "Get History Users List",
+                "operationId": "get_history_user_list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetHistoryUserResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/coins_service.HistoryUserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/message/{id}": {
             "put": {
                 "description": "Update Message",
                 "consumes": [
@@ -988,7 +1157,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/sell": {
+        "/v1/sell": {
             "post": {
                 "description": "Get Sell",
                 "consumes": [
@@ -1071,7 +1240,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user": {
+        "/v1/user": {
             "get": {
                 "security": [
                     {
@@ -1108,14 +1277,6 @@ const docTemplate = `{
                         "description": "search",
                         "name": "search",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "default": "a1924766-a9ee-11ed-afa1-0242ac120001",
-                        "description": "Platform-Id",
-                        "name": "Platform-Id",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -1257,7 +1418,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/buy": {
+        "/v1/user/buy": {
             "get": {
                 "security": [
                     {
@@ -1468,7 +1629,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/message": {
+        "/v1/user/message": {
             "post": {
                 "description": "Create Message",
                 "consumes": [
@@ -1478,7 +1639,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Message"
+                    "User"
                 ],
                 "summary": "Create Message",
                 "operationId": "create_user_message",
@@ -1562,7 +1723,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/message/{id}": {
+        "/v1/user/message/{id}": {
             "get": {
                 "description": "Get User Message  By ID",
                 "consumes": [
@@ -1643,7 +1804,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/sell": {
+        "/v1/user/sell": {
             "get": {
                 "security": [
                     {
@@ -1854,7 +2015,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/{id}": {
+        "/v1/user/{id}": {
             "get": {
                 "description": "Get User  By ID",
                 "consumes": [
@@ -2122,6 +2283,52 @@ const docTemplate = `{
                 }
             }
         },
+        "coins_service.HistoriesUser": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "all_price": {
+                    "type": "string"
+                },
+                "card_number": {
+                    "type": "string"
+                },
+                "coin_amount": {
+                    "type": "string"
+                },
+                "coin_img": {
+                    "type": "string"
+                },
+                "coin_price": {
+                    "type": "string"
+                },
+                "date_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "coins_service.HistoryUserResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "histories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/coins_service.HistoriesUser"
+                    }
+                }
+            }
+        },
         "coins_service.UpdateCoin": {
             "type": "object",
             "properties": {
@@ -2211,6 +2418,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "users_service.Credentials": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }

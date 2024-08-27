@@ -1,5 +1,12 @@
 package handlers
 
+import (
+	"go_tg_api_gateway/api/http"
+	"strings"
+
+	"github.com/gin-gonic/gin"
+)
+
 // ResponseModel ...
 type ResponseModel struct {
 	Code    int         `json:"code"`
@@ -83,3 +90,28 @@ type HasAccessModel struct {
 // 		c.Next()
 // 	}
 // }
+
+func (h *Handler) AuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		tokenStr := c.GetHeader("Authorization")
+		if tokenStr == "" {
+			h.handleResponse(c, http.Unauthorized, gin.H{"error": "Authorization token is required"})
+			c.Abort()
+			return
+		}
+
+		tokenStr = strings.TrimPrefix(tokenStr, "Bearer ")
+
+		claims, err := VerifyToken(tokenStr)
+		if err != nil {
+			h.handleResponse(c, http.Unauthorized, gin.H{"error": err.Error()})
+			c.Abort()
+			return
+		}
+
+		c.Set("username", claims.Subject)
+
+		// Keyingi handlerga o'tish
+		c.Next()
+	}
+}
