@@ -150,7 +150,7 @@ func (h *Handler) GetCoinByID(c *gin.Context) {
 	)
 	for _, ext := range extensions {
 		potensialPath := fmt.Sprintf("./images/coin/%s%s", fileName, ext)
-		link := fmt.Sprintf("coin/image/%s%s", fileName, ext)
+		link := fmt.Sprintf("images/coin/%s%s", fileName, ext)
 		if _, err := os.Stat(potensialPath); err == nil {
 			filePath = potensialPath
 			imageUrl = link
@@ -224,7 +224,7 @@ func (h *Handler) GetCoinList(c *gin.Context) {
 
 		for _, ext := range extensions {
 			potensialPath := fmt.Sprintf("./images/coin/%s%s", fileName, ext)
-			link := fmt.Sprintf("coin/image/%s%s", fileName, ext)
+			link := fmt.Sprintf("images/coin/%s%s", fileName, ext)
 			if _, err := os.Stat(potensialPath); err == nil {
 				filePath = potensialPath
 				imageUrl = link
@@ -246,7 +246,6 @@ func (h *Handler) GetCoinList(c *gin.Context) {
 		fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
 		resp.Coins[i].ImageId = fileURL
 	}
-	fmt.Println(resp)
 	h.handleResponse(c, http.OK, resp)
 }
 
