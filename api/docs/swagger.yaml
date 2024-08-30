@@ -310,6 +310,183 @@ definitions:
 info:
   contact: {}
 paths:
+  /coin:
+    get:
+      consumes:
+      - application/json
+      description: Get Coins List
+      operationId: get_coin_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetAllCoinResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.GetListCoinResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Coins List
+      tags:
+      - Coin
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create Coin
+      operationId: create_coin
+      parameters:
+      - description: Upload file
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Coin Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Coin Buy Price
+        in: formData
+        name: coin_buy_price
+        required: true
+        type: string
+      - description: Coin Sell Price
+        in: formData
+        name: coin_sell_price
+        required: true
+        type: string
+      - description: Address
+        in: formData
+        name: address
+        required: true
+        type: string
+      - description: Card Number
+        in: formData
+        name: card_number
+        required: true
+        type: string
+      - description: Status
+        in: formData
+        name: status
+        required: true
+        type: string
+      - description: coins_service.CreateCoin.HalfCoinPrice
+        in: formData
+        name: halfcoins
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetCoinBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.Coin'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Coin
+      tags:
+      - Coin
+  /coin/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Coin  By ID
+      operationId: get_coin_by_id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: CoinBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.Coin'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Coin  By ID
+      tags:
+      - Coin
   /login:
     post:
       consumes:
@@ -585,138 +762,6 @@ paths:
       summary: Get Buy
       tags:
       - Buy
-  /v1/coin:
-    get:
-      consumes:
-      - application/json
-      description: Get Coins List
-      operationId: get_coin_list
-      parameters:
-      - description: offset
-        in: query
-        name: offset
-        type: integer
-      - description: limit
-        in: query
-        name: limit
-        type: integer
-      - description: search
-        in: query
-        name: search
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: GetAllCoinResponseBody
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/coins_service.GetListCoinResponse'
-              type: object
-        "400":
-          description: Invalid Argument
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Get Coins List
-      tags:
-      - Coin
-    post:
-      consumes:
-      - multipart/form-data
-      description: Create Coin
-      operationId: create_coin
-      parameters:
-      - description: Upload file
-        in: formData
-        name: file
-        required: true
-        type: file
-      - description: Coin Name
-        in: formData
-        name: name
-        required: true
-        type: string
-      - description: Coin Buy Price
-        in: formData
-        name: coin_buy_price
-        required: true
-        type: string
-      - description: Coin Sell Price
-        in: formData
-        name: coin_sell_price
-        required: true
-        type: string
-      - description: Address
-        in: formData
-        name: address
-        required: true
-        type: string
-      - description: Card Number
-        in: formData
-        name: card_number
-        required: true
-        type: string
-      - description: Status
-        in: formData
-        name: status
-        required: true
-        type: string
-      - description: coins_service.CreateCoin.HalfCoinPrice
-        in: formData
-        name: halfcoins
-        type: array
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: GetCoinBody
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/coins_service.Coin'
-              type: object
-        "400":
-          description: Invalid Argument
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Create Coin
-      tags:
-      - Coin
   /v1/coin/{id}:
     delete:
       consumes:
@@ -760,50 +805,6 @@ paths:
                   type: string
               type: object
       summary: Delete Coin
-      tags:
-      - Coin
-    get:
-      consumes:
-      - application/json
-      description: Get Coin  By ID
-      operationId: get_coin_by_id
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: CoinBody
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/coins_service.Coin'
-              type: object
-        "400":
-          description: Invalid Argument
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Get Coin  By ID
       tags:
       - Coin
     put:
@@ -1539,9 +1540,4 @@ paths:
       summary: UserSell
       tags:
       - User
-securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: Authorization
-    type: apiKey
 swagger: "2.0"

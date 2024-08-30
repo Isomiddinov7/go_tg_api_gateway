@@ -14,47 +14,33 @@ import (
 
 func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 
-	// @securityDefinitions.apikey ApiKeyAuth
-	// @in header
-	// @name Authorization
 	r.Use(middlewares.Cors())
 	r.Use(MaxAllowed(5000))
 
-	// r.Use(h.CheckPasswordMiddleware())
 	r.POST("/login", h.Login)
 
-	v1 := r.Group("v1")
-	// v1.Use(h.AuthMiddleware())
-	{
-		v1.POST("/coin", h.CreateCoin)
-		v1.GET("/coin/:id", h.GetCoinByID)
-		v1.GET("/coin", h.GetCoinList)
-		v1.PUT("/coin/:id", h.UpdateCoin)
-		v1.DELETE("/coin/:id", h.DeleteCoin)
+	r.POST("/coin", h.CreateCoin)
+	r.GET("/coin/:id", h.GetCoinByID)
+	r.GET("/coin", h.GetCoinList)
+	r.PUT("/coin/:id", h.UpdateCoin)
+	r.DELETE("/coin/:id", h.DeleteCoin)
 
-		//Buy Or Sale
-		v1.POST("/sell", h.GetSell)
-		v1.POST("/buy", h.GetBuy)
+	r.POST("/sell", h.GetSell)
+	r.POST("/buy", h.GetBuy)
 
-		//Transactions
-		v1.POST("/user/sell", h.UserSell)
-		v1.POST("/user/buy", h.UserBuy)
-		v1.GET("/user/sell", h.AllUserSell)
-		v1.GET("/user/buy", h.AllUserBuy)
+	r.POST("/user/sell", h.UserSell)
+	r.POST("/user/buy", h.UserBuy)
+	r.GET("/user/sell", h.AllUserSell)
+	r.GET("/user/buy", h.AllUserBuy)
 
-		//Messages
-		v1.POST("/admin/message", h.CreateAdminMessage)
-		v1.PUT("/message/:id", h.UpdateMessage)
-		v1.GET("/admin/message", h.GetAdminAllMessage)
-		v1.GET("/admin/message/:id", h.GetUserMessage)
-		v1.GET("/admin/message/user/:id", h.GetMessageAdminID)
+	r.POST("/admin/message", h.CreateAdminMessage)
+	r.PUT("/message/:id", h.UpdateMessage)
+	r.GET("/admin/message", h.GetAdminAllMessage)
+	r.GET("/admin/message/:id", h.GetUserMessage)
+	r.GET("/admin/message/user/:id", h.GetMessageAdminID)
 
-		//History
-		v1.GET("/history/user", h.HistoryUser)
+	r.GET("/history/user", h.HistoryUser)
 
-	}
-
-	// USER
 	r.POST("/user", h.CreateUser)
 	r.GET("/user/:id", h.GetUserByID)
 	r.GET("/user", h.GetUserList)
@@ -62,7 +48,7 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.POST("/user/message", h.CreateUserMessage)
 	r.GET("/user/message/:id", h.GetUserMessage)
 
-	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
+	url := ginSwagger.URL("swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 }
 

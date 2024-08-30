@@ -8,16 +8,14 @@ import (
 	"go_tg_api_gateway/genproto/coins_service"
 	"go_tg_api_gateway/pkg/util"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 // CreateCoin godoc
 // @ID create_coin
-// @Router /v1/coin [POST]
+// @Router /coin [POST]
 // @Summary Create Coin
 // @Description  Create Coin
 // @Tags Coin
@@ -36,49 +34,61 @@ import (
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) CreateCoin(c *gin.Context) {
 
+	// file, err := c.FormFile("file")
+	// if err != nil {
+	// 	h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
+	// 	return
+	// }
+
+	// ext := filepath.Ext(file.Filename)
+	// validFormats := map[string]bool{
+	// 	".jpg":  true,
+	// 	".jpeg": true,
+	// 	".png":  true,
+	// 	".gif":  true,
+	// }
+	// if !validFormats[ext] {
+	// 	h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid file format"})
+	// 	return
+	// }
+
+	// err = os.MkdirAll("images/coin", os.ModePerm)
+	// if err != nil {
+	// 	h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to create uploads directory"})
+	// 	return
+	// }
+
+	// uniqueId := uuid.New()
+	// filename := strings.Replace(uniqueId.String(), "-", "", -1) + ext
+	// filePath := filepath.Join("images/coin", filename)
+
+	// if err := c.SaveUploadedFile(file, filePath); err != nil {
+	// 	h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file"})
+	// 	return
+	// }
+
+	// imageLink := filePath
+	// imgId, err := h.services.FileImage().ImageUpload(
+	// 	context.Background(),
+	// 	&coins_service.ImageData{
+	// 		Id:        uniqueId.String(),
+	// 		ImageLink: imageLink,
+	// 	},
+	// )
+	// if err != nil {
+	// 	h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file info to database"})
+	// 	return
+	// }
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
 		return
 	}
 
-	ext := filepath.Ext(file.Filename)
-	validFormats := map[string]bool{
-		".jpg":  true,
-		".jpeg": true,
-		".png":  true,
-		".gif":  true,
-	}
-	if !validFormats[ext] {
-		h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid file format"})
-		return
-	}
-
-	err = os.MkdirAll("images/coin", os.ModePerm)
+	imageURL, err := util.UploadImage(file)
 	if err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to create uploads directory"})
-		return
-	}
-
-	uniqueId := uuid.New()
-	filename := strings.Replace(uniqueId.String(), "-", "", -1) + ext
-	filePath := filepath.Join("images/coin", filename)
-
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file"})
-		return
-	}
-
-	imageLink := filePath
-	imgId, err := h.services.FileImage().ImageUpload(
-		context.Background(),
-		&coins_service.ImageData{
-			Id:        uniqueId.String(),
-			ImageLink: imageLink,
-		},
-	)
-	if err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file info to database"})
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 		return
 	}
 
@@ -90,7 +100,7 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 	coin.Address = c.PostForm("address")
 	coin.CardNumber = c.PostForm("card_number")
 	coin.Status = c.PostForm("status")
-	coin.ImageId = imgId.Id
+	coin.ImageId = imageURL
 	halfcoinsJSON := c.PostForm("halfcoins")
 	var halfcoins []*coins_service.HalfCoinPrice
 	if err := json.Unmarshal([]byte(halfcoinsJSON), &halfcoins); err != nil {
@@ -113,7 +123,7 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 
 // GetCoinByID godoc
 // @ID get_coin_by_id
-// @Router /v1/coin/{id} [GET]
+// @Router /coin/{id} [GET]
 // @Summary Get Coin  By ID
 // @Description Get Coin  By ID
 // @Tags Coin
@@ -175,7 +185,7 @@ func (h *Handler) GetCoinByID(c *gin.Context) {
 // @Security ApiKeyAuth
 // GetCoinList godoc
 // @ID get_coin_list
-// @Router /v1/coin [GET]
+// @Router /coin [GET]
 // @Summary Get Coins List
 // @Description  Get Coins List
 // @Tags Coin
