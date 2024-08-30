@@ -17,6 +17,7 @@ import (
 // UploadImage uploads a file to an AWS S3 bucket.
 func UploadImage(file *multipart.FileHeader) (string, error) {
 
+	// Load environment variables from .env file
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file")
@@ -27,87 +28,69 @@ func UploadImage(file *multipart.FileHeader) (string, error) {
 		log.Fatalf("AWS_REGION is not set in the environment")
 	}
 
+	bucketName := os.Getenv("AWS_S3_BUCKET")
+	if bucketName == "" {
+		log.Fatalf("AWS_S3_BUCKET is not set in the environment")
+	}
+
 	// Load the AWS config with the specified region
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(awsRegion))
 	if err != nil {
-		log.Printf("error loading AWS config: %v", err)
-		return "", fmt.Errorf("error loading AWS config: %w", err)
+		log.Printf("Error loading AWS config: %v", err)
+		return "", fmt.Errorf("Error loading AWS config: %w", err)
 	}
 
 	// Create a new S3 client
 	client := s3.NewFromConfig(cfg)
 
+	// Ensure the bucket is in the correct region by checking its location
+	location, err := client.GetBucketLocation(context.TODO(), &s3.GetBucketLocationInput{
+		Bucket: aws.String(bucketName),
+	})
+	if err != nil {
+		log.Printf("Error getting bucket location: %v", err)
+		return "", fmt.Errorf("Error getting bucket location: %w", err)
+	}
+
+	// If the bucket's location is not the same as the config region, adjust the config
+	bucketRegion := string(location.LocationConstraint)
+	if bucketRegion == "" {
+		bucketRegion = "us-east-1" // Default for the "US East (N. Virginia)" region
+	}
+
+	if bucketRegion != awsRegion {
+		cfg, err = config.LoadDefaultConfig(context.TODO(), config.WithRegion(bucketRegion))
+		if err != nil {
+			log.Printf("Error reloading AWS config with bucket region: %v", err)
+			return "", fmt.Errorf("Error reloading AWS config with bucket region: %w", err)
+		}
+		client = s3.NewFromConfig(cfg)
+	}
+
 	// Open the file
 	f, err := file.Open()
 	if err != nil {
-		log.Printf("error opening file: %v", err)
-		return "", fmt.Errorf("error opening file: %w", err)
+		log.Printf("Error opening file: %v", err)
+		return "", fmt.Errorf("Error opening file: %w", err)
 	}
 	defer f.Close()
 
 	// Create an uploader with the S3 client
 	uploader := manager.NewUploader(client)
 
-	bucketName := "gbubemi"
 	key := file.Filename
 	_, err = uploader.Upload(context.TODO(), &s3.PutObjectInput{
 		Bucket: aws.String(bucketName),
 		Key:    aws.String(key),
 		Body:   f,
-		ACL:    "public-read",
+		// Remove the ACL parameter as it is not supported by the bucket
 	})
 	if err != nil {
-		log.Printf("error uploading file to S3: %v", err)
-		return "", fmt.Errorf("error uploading file to S3: %w", err)
+		log.Printf("Error uploading file to S3: %v", err)
+		return "", fmt.Errorf("Error uploading file to S3: %w", err)
 	}
 
 	// Return the URL of the uploaded file
-	region := cfg.Region // Get the region from the config
-	url := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, key)
+	url := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", bucketName, bucketRegion, key)
 	return url, nil
-
-	// // Return the URL of the uploaded file
-	// url := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", "gbubemi", awsRegion, file.Filename)
-	// return url, nil
 }
-
-// func (controller *UserController) UploadImageHandler(c *gin.Context) {
-// 	// Get the user ID from the context
-// 	userID, exists := c.Get("userID")
-// 	if !exists {
-// 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-// 		return
-// 	}
-
-// 	userIDStr, ok := userID.(string)
-// 	if !ok {
-// 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user ID"})
-// 		return
-// 	}
-
-// 	// Get the image from form data
-// 	file, err := c.FormFile("image")
-// 	if err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Image file is required"})
-// 		return
-// 	}
-
-// 	// Upload the image directly using utils.UploadImage
-// 	imageURL, err := utils.UploadImage(file)
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload image"})
-// 		return
-// 	}
-
-// 	// Update the user with the image URL
-// 	if err := controller.userService.UploadImage(userIDStr, imageURL); err != nil {
-// 		if err.Error() == "user not found" {
-// 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-// 			return
-// 		}
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{"message": "Image uploaded successfully"})
-// }
