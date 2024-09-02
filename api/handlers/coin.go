@@ -41,7 +41,7 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 	if err != nil {
 		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 		return
-	}
+	}		
 
 	var coin coins_service.CreateCoin
 

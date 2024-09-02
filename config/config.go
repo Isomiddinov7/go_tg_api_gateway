@@ -61,7 +61,7 @@ func Load() Config {
 	config.CoinGRPCPort = cast.ToString(getOrReturnDefaultValue("COIN_GRPC_PORT", ":50501"))
 
 	config.UserServiceHost = cast.ToString(getOrReturnDefaultValue("USER_SERVICE_HOST", "localhost"))
-	config.UserGRPCPort = cast.ToString(getOrReturnDefaultValue("USER_GRPC_PORT", ":9102"))
+	config.UserGRPCPort = cast.ToString(getOrReturnDefaultValue("USER_GRPC_PORT", ":50502"))
 
 	return config
 }
