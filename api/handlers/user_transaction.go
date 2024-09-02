@@ -2,16 +2,11 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"go_tg_api_gateway/api/http"
-	"go_tg_api_gateway/genproto/coins_service"
 	"go_tg_api_gateway/genproto/users_service"
-	"os"
-	"path/filepath"
-	"strings"
+	"go_tg_api_gateway/pkg/util"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 // UserSell godoc
@@ -38,44 +33,9 @@ func (h *Handler) UserSell(c *gin.Context) {
 		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
 		return
 	}
-
-	ext := filepath.Ext(file.Filename)
-	validFormats := map[string]bool{
-		".jpg":  true,
-		".jpeg": true,
-		".png":  true,
-		".gif":  true,
-	}
-	if !validFormats[ext] {
-		h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid file format"})
-		return
-	}
-
-	err = os.MkdirAll("images/user_sell", os.ModePerm)
+	imageURL, err := util.UploadImage(file)
 	if err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to create uploads directory"})
-		return
-	}
-
-	uniqueId := uuid.New()
-	filename := strings.Replace(uniqueId.String(), "-", "", -1) + ext
-	filePath := filepath.Join("images/user_sell", filename)
-
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file"})
-		return
-	}
-
-	imageLink := filePath
-	imgId, err := h.services.FileImage().ImageUpload(
-		context.Background(),
-		&coins_service.ImageData{
-			Id:        uniqueId.String(),
-			ImageLink: imageLink,
-		},
-	)
-	if err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file info to database"})
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 		return
 	}
 
@@ -86,7 +46,7 @@ func (h *Handler) UserSell(c *gin.Context) {
 	user_sell.CoinAmount = c.PostForm("coin_amount")
 	user_sell.Message = c.PostForm("message")
 	user_sell.CardNumber = c.PostForm("card_number")
-	user_sell.CheckImg = imgId.Id
+	user_sell.CheckImg = imageURL
 
 	_, err = h.services.UserTransaction().UserSell(
 		c.Request.Context(),
@@ -124,44 +84,9 @@ func (h *Handler) UserBuy(c *gin.Context) {
 		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
 		return
 	}
-
-	ext := filepath.Ext(file.Filename)
-	validFormats := map[string]bool{
-		".jpg":  true,
-		".jpeg": true,
-		".png":  true,
-		".gif":  true,
-	}
-	if !validFormats[ext] {
-		h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid file format"})
-		return
-	}
-
-	err = os.MkdirAll("images/user_buy", os.ModePerm)
+	imageURL, err := util.UploadImage(file)
 	if err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to create uploads directory"})
-		return
-	}
-
-	uniqueId := uuid.New()
-	filename := strings.Replace(uniqueId.String(), "-", "", -1) + ext
-	filePath := filepath.Join("images/user_buy", filename)
-
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file"})
-		return
-	}
-
-	imageLink := filePath
-	imgId, err := h.services.FileImage().ImageUpload(
-		context.Background(),
-		&coins_service.ImageData{
-			Id:        uniqueId.String(),
-			ImageLink: imageLink,
-		},
-	)
-	if err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file info to database"})
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 		return
 	}
 
@@ -171,7 +96,7 @@ func (h *Handler) UserBuy(c *gin.Context) {
 	user_buy.CoinAmount = c.PostForm("coin_amount")
 	user_buy.Message = c.PostForm("message")
 	user_buy.Address = c.PostForm("address")
-	user_buy.PayImg = imgId.Id
+	user_buy.PayImg = imageURL
 
 	_, err = h.services.UserTransaction().UserBuy(
 		c.Request.Context(),
@@ -227,39 +152,6 @@ func (h *Handler) AllUserSell(c *gin.Context) {
 		return
 	}
 
-	for i := range resp.UserTransaction {
-		fileName := strings.Replace(resp.UserTransaction[i].CheckImg, "-", "", -1)
-		extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-
-		var filePath, imageUrl string
-
-		var found bool
-
-		for _, ext := range extensions {
-			potensialPath := fmt.Sprintf("./images/user_sell/%s%s", fileName, ext)
-			link := fmt.Sprintf("user/image/%s%s", fileName, ext)
-			if _, err := os.Stat(potensialPath); err == nil {
-				filePath = potensialPath
-				imageUrl = link
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
-			return
-		}
-
-		if _, err := os.Stat(filePath); os.IsNotExist(err) {
-			h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
-			return
-		}
-
-		fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
-		resp.UserTransaction[i].CheckImg = fileURL
-	}
-
 	h.handleResponse(c, http.OK, resp)
 }
 
@@ -303,39 +195,6 @@ func (h *Handler) AllUserBuy(c *gin.Context) {
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
-	}
-
-	for i := range resp.UserTransaction {
-		fileName := strings.Replace(resp.UserTransaction[i].CheckImg, "-", "", -1)
-		extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-
-		var filePath, imageUrl string
-
-		var found bool
-
-		for _, ext := range extensions {
-			potensialPath := fmt.Sprintf("./images/user_buy/%s%s", fileName, ext)
-			link := fmt.Sprintf("user/image/%s%s", fileName, ext)
-			if _, err := os.Stat(potensialPath); err == nil {
-				filePath = potensialPath
-				imageUrl = link
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
-			return
-		}
-
-		if _, err := os.Stat(filePath); os.IsNotExist(err) {
-			h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
-			return
-		}
-
-		fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
-		resp.UserTransaction[i].CheckImg = fileURL
 	}
 
 	h.handleResponse(c, http.OK, resp)

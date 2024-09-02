@@ -2,17 +2,11 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"go_tg_api_gateway/api/http"
-	"go_tg_api_gateway/genproto/coins_service"
 	"go_tg_api_gateway/genproto/users_service"
 	"go_tg_api_gateway/pkg/util"
-	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 // CreateMessage godoc
@@ -36,46 +30,12 @@ func (h *Handler) CreateUserMessage(c *gin.Context) {
 	if err != nil {
 		h.handleResponse(c, http.ErrMissingFile, gin.H{"error": "http: no such file"})
 	} else {
-		ext := filepath.Ext(file.Filename)
-		validFormats := map[string]bool{
-			".jpg":  true,
-			".jpeg": true,
-			".png":  true,
-			".gif":  true,
-		}
-		if !validFormats[ext] {
-			h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid file format"})
-			return
-		}
-
-		err = os.MkdirAll("images/messages", os.ModePerm)
+		imageURL, err := util.UploadImage(file)
 		if err != nil {
-			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to create uploads directory"})
+			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 			return
 		}
-
-		uniqueId := uuid.New()
-		filename := strings.Replace(uniqueId.String(), "-", "", -1) + ext
-		filePath := filepath.Join("images/messages", filename)
-
-		if err := c.SaveUploadedFile(file, filePath); err != nil {
-			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file"})
-			return
-		}
-
-		imageLink := filePath
-		imgId, err := h.services.FileImage().ImageUpload(
-			context.Background(),
-			&coins_service.ImageData{
-				Id:        uniqueId.String(),
-				ImageLink: imageLink,
-			},
-		)
-		if err != nil {
-			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file info to database"})
-			return
-		}
-		message.File = imgId.Id
+		message.File = imageURL
 	}
 
 	message.Text = c.PostForm("text")
@@ -114,46 +74,12 @@ func (h *Handler) CreateAdminMessage(c *gin.Context) {
 	if err != nil {
 		h.handleResponse(c, http.ErrMissingFile, gin.H{"error": "http: no such file"})
 	} else {
-		ext := filepath.Ext(file.Filename)
-		validFormats := map[string]bool{
-			".jpg":  true,
-			".jpeg": true,
-			".png":  true,
-			".gif":  true,
-		}
-		if !validFormats[ext] {
-			h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid file format"})
-			return
-		}
-
-		err = os.MkdirAll("images/messages", os.ModePerm)
+		imageURL, err := util.UploadImage(file)
 		if err != nil {
-			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to create uploads directory"})
+			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 			return
 		}
-
-		uniqueId := uuid.New()
-		filename := strings.Replace(uniqueId.String(), "-", "", -1) + ext
-		filePath := filepath.Join("images/messages", filename)
-
-		if err := c.SaveUploadedFile(file, filePath); err != nil {
-			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file"})
-			return
-		}
-
-		imageLink := filePath
-		imgId, err := h.services.FileImage().ImageUpload(
-			context.Background(),
-			&coins_service.ImageData{
-				Id:        uniqueId.String(),
-				ImageLink: imageLink,
-			},
-		)
-		if err != nil {
-			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file info to database"})
-			return
-		}
-		message.File = imgId.Id
+		message.File = imageURL
 	}
 
 	message.Text = c.PostForm("text")
@@ -239,39 +165,7 @@ func (h *Handler) GetUserMessage(c *gin.Context) {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
-	for i := range resp.Messages {
-		if resp.Messages[i].File == "" {
-			continue
-		} else {
-			fileName := strings.Replace(resp.Messages[i].File, "-", "", -1)
-			extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-			var (
-				filePath, imageUrl string
-				found              bool
-			)
 
-			for _, ext := range extensions {
-				potensialPath := fmt.Sprintf("./images/messages/%s%s", fileName, ext)
-				link := fmt.Sprintf("messages/image/%s%s", fileName, ext)
-				if _, err := os.Stat(potensialPath); err == nil {
-					filePath = potensialPath
-					imageUrl = link
-					found = true
-					break
-				}
-			}
-			if !found {
-				h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
-				return
-			}
-			if _, err := os.Stat(filePath); os.IsNotExist(err) {
-				h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
-				return
-			}
-			fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
-			resp.Messages[i].File = fileURL
-		}
-	}
 	h.handleResponse(c, http.OK, resp)
 
 }
@@ -297,40 +191,7 @@ func (h *Handler) GetAdminAllMessage(c *gin.Context) {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
-	for i := range resp.AdminMessage {
-		if resp.AdminMessage[i].File == "" {
-			continue
-		} else {
-			fileName := strings.Replace(resp.AdminMessage[i].File, "-", "", -1)
-			extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-			var (
-				filePath, imageUrl string
-				found              bool
-			)
 
-			for _, ext := range extensions {
-				potensialPath := fmt.Sprintf("./images/messages/%s%s", fileName, ext)
-				link := fmt.Sprintf("messages/image/%s%s", fileName, ext)
-				if _, err := os.Stat(potensialPath); err == nil {
-					filePath = potensialPath
-					imageUrl = link
-					found = true
-					break
-				}
-			}
-			if !found {
-				h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
-				return
-			}
-			if _, err := os.Stat(filePath); os.IsNotExist(err) {
-				h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
-				return
-			}
-			fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
-			resp.AdminMessage[i].File = fileURL
-		}
-	}
-	fmt.Println(resp)
 	h.handleResponse(c, http.OK, resp)
 
 }
@@ -364,40 +225,7 @@ func (h *Handler) GetAdminMessage(c *gin.Context) {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
-	for i := range resp.Messages {
-		if resp.Messages[i].File == "" {
-			continue
-		} else {
 
-			fileName := strings.Replace(resp.Messages[i].File, "-", "", -1)
-			extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-			var (
-				filePath, imageUrl string
-				found              bool
-			)
-
-			for _, ext := range extensions {
-				potensialPath := fmt.Sprintf("./images/messages/%s%s", fileName, ext)
-				link := fmt.Sprintf("messages/image/%s%s", fileName, ext)
-				if _, err := os.Stat(potensialPath); err == nil {
-					filePath = potensialPath
-					imageUrl = link
-					found = true
-					break
-				}
-			}
-			if !found {
-				h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
-				return
-			}
-			if _, err := os.Stat(filePath); os.IsNotExist(err) {
-				h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
-				return
-			}
-			fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
-			resp.Messages[i].File = fileURL
-		}
-	}
 	h.handleResponse(c, http.OK, resp)
 
 }
@@ -431,41 +259,7 @@ func (h *Handler) GetMessageAdminID(c *gin.Context) {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
-	for i := range resp.Message {
-		if resp.Message[i].File == "" {
-			continue
-		} else {
 
-			fileName := strings.Replace(resp.Message[i].File, "-", "", -1)
-			extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-			var (
-				filePath, imageUrl string
-				found              bool
-			)
-
-			for _, ext := range extensions {
-				potensialPath := fmt.Sprintf("./images/messages/%s%s", fileName, ext)
-				link := fmt.Sprintf("messages/image/%s%s", fileName, ext)
-				if _, err := os.Stat(potensialPath); err == nil {
-					filePath = potensialPath
-					imageUrl = link
-					found = true
-					break
-				}
-			}
-			if !found {
-				h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
-				return
-			}
-			if _, err := os.Stat(filePath); os.IsNotExist(err) {
-				h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
-				return
-			}
-			fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
-			resp.File = fileURL
-			resp.Message[i].File = fileURL
-		}
-	}
 	h.handleResponse(c, http.OK, resp)
 
 }

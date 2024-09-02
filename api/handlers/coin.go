@@ -3,12 +3,9 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/coins_service"
 	"go_tg_api_gateway/pkg/util"
-	"os"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,52 +30,6 @@ import (
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) CreateCoin(c *gin.Context) {
-
-	// file, err := c.FormFile("file")
-	// if err != nil {
-	// 	h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
-	// 	return
-	// }
-
-	// ext := filepath.Ext(file.Filename)
-	// validFormats := map[string]bool{
-	// 	".jpg":  true,
-	// 	".jpeg": true,
-	// 	".png":  true,
-	// 	".gif":  true,
-	// }
-	// if !validFormats[ext] {
-	// 	h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid file format"})
-	// 	return
-	// }
-
-	// err = os.MkdirAll("images/coin", os.ModePerm)
-	// if err != nil {
-	// 	h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to create uploads directory"})
-	// 	return
-	// }
-
-	// uniqueId := uuid.New()
-	// filename := strings.Replace(uniqueId.String(), "-", "", -1) + ext
-	// filePath := filepath.Join("images/coin", filename)
-
-	// if err := c.SaveUploadedFile(file, filePath); err != nil {
-	// 	h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file"})
-	// 	return
-	// }
-
-	// imageLink := filePath
-	// imgId, err := h.services.FileImage().ImageUpload(
-	// 	context.Background(),
-	// 	&coins_service.ImageData{
-	// 		Id:        uniqueId.String(),
-	// 		ImageLink: imageLink,
-	// 	},
-	// )
-	// if err != nil {
-	// 	h.handleResponse(c, http.InternalServerError, gin.H{"error": "Unable to save file info to database"})
-	// 	return
-	// }
 
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -152,33 +103,6 @@ func (h *Handler) GetCoinByID(c *gin.Context) {
 		return
 	}
 
-	fileName := strings.Replace(resp.ImageId, "-", "", -1)
-	extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-	var (
-		filePath, imageUrl string
-		found              bool
-	)
-	for _, ext := range extensions {
-		potensialPath := fmt.Sprintf("./images/coin/%s%s", fileName, ext)
-		link := fmt.Sprintf("images/coin/%s%s", fileName, ext)
-		if _, err := os.Stat(potensialPath); err == nil {
-			filePath = potensialPath
-			imageUrl = link
-			found = true
-			break
-		}
-	}
-	if !found {
-		h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
-		return
-	}
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
-		return
-	}
-
-	fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
-	resp.ImageId = fileURL
 	h.handleResponse(c, http.OK, resp)
 }
 
@@ -224,38 +148,6 @@ func (h *Handler) GetCoinList(c *gin.Context) {
 		return
 	}
 
-	for i := range resp.Coins {
-		fileName := strings.Replace(resp.Coins[i].ImageId, "-", "", -1)
-		extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-
-		var filePath, imageUrl string
-
-		var found bool
-
-		for _, ext := range extensions {
-			potensialPath := fmt.Sprintf("./images/coin/%s%s", fileName, ext)
-			link := fmt.Sprintf("images/coin/%s%s", fileName, ext)
-			if _, err := os.Stat(potensialPath); err == nil {
-				filePath = potensialPath
-				imageUrl = link
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			h.handleResponse(c, http.NoContent, gin.H{"error": "File type not found"})
-			return
-		}
-
-		if _, err := os.Stat(filePath); os.IsNotExist(err) {
-			h.handleResponse(c, http.NoContent, gin.H{"error": "File not found"})
-			return
-		}
-
-		fileURL := fmt.Sprintf("https://alimkulov.uz/%s", imageUrl)
-		resp.Coins[i].ImageId = fileURL
-	}
 	h.handleResponse(c, http.OK, resp)
 }
 
@@ -319,52 +211,12 @@ func (h *Handler) DeleteCoin(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.services.CoinService().GetById(
+	_, err := h.services.CoinService().Delete(
 		c.Request.Context(),
 		&coins_service.CoinPrimaryKey{Id: CoinId},
 	)
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
-	}
-
-	_, err = h.services.CoinService().Delete(
-		c.Request.Context(),
-		&coins_service.CoinPrimaryKey{Id: CoinId},
-	)
-	if err != nil {
-		h.handleResponse(c, http.GRPCError, err.Error())
-		return
-	}
-
-	name := strings.Replace(resp.ImageId, "-", "", -1)
-	extensions := []string{".png", ".gif", ".jpg", ".jpeg"}
-	var (
-		filePath string
-		found    bool
-	)
-
-	for _, ext := range extensions {
-		potentialPath := fmt.Sprintf("./images/coin/%s%s", name, ext)
-		if _, err := os.Stat(potentialPath); err == nil {
-			filePath = potentialPath
-			found = true
-			break
-		}
-	}
-	if !found {
-		c.JSON(400, gin.H{"error": "File not found"})
-		return
-	}
-
-	err = os.Remove(filePath)
-	if err != nil {
-		c.JSON(500, gin.H{"error": "Server Error", "details": err.Error()})
-		return
-	}
-
-	_, err = h.services.FileImage().ImageDelete(context.Background(), &coins_service.ImagePrimaryKey{Id: resp.ImageId})
-	if err != nil {
-		c.JSON(500, gin.H{"error": "Server Error", "details": err.Error()})
 		return
 	}
 
