@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/users_service"
 	"go_tg_api_gateway/pkg/utils"
@@ -58,12 +59,12 @@ func (h *Handler) CreateUser(c *gin.Context) {
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetUserByID(c *gin.Context) {
 
-	telegram_id := c.Param("telegram_id")
-
+	TelegramId := c.Param("id")
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>", TelegramId)
 	resp, err := h.services.UserService().GetById(
 		context.Background(),
 		&users_service.UserPrimaryKey{
-			Id: telegram_id,
+			Id: TelegramId,
 		},
 	)
 
