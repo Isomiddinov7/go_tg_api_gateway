@@ -25,6 +25,9 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.PUT("/coin/:id", h.DeserializeUser(), h.UpdateCoin)
 	r.DELETE("/coin/:id", h.DeserializeUser(), h.DeleteCoin)
 
+	r.GET("/coin/:id", h.GetCoinByID)
+	r.GET("/coin", h.GetCoinList)
+
 	r.POST("/sell", h.GetSell)
 	r.POST("/buy", h.GetBuy)
 
