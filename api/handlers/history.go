@@ -4,7 +4,7 @@ import (
 	"context"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/coins_service"
-	"go_tg_api_gateway/pkg/util"
+	"go_tg_api_gateway/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +12,7 @@ import (
 // @Security ApiKeyAuth
 // GetHistoryUserList godoc
 // @ID get_history_user_list
-// @Router /v1/history/user [GET]
+// @Router /history/user [GET]
 // @Summary Get History Users List
 // @Description  Get History Users List
 // @Tags History
@@ -26,7 +26,7 @@ func (h *Handler) HistoryUser(c *gin.Context) {
 
 	UserID := c.Param("id")
 
-	if !util.IsValidUUID(UserID) {
+	if !utils.IsValidUUID(UserID) {
 		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
 		return
 	}

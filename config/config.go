@@ -39,7 +39,7 @@ type Config struct {
 }
 
 func Load() Config {
-	if err := godotenv.Load("/go-api-gateway.env"); err != nil {
+	if err := godotenv.Load("/app.env"); err != nil {
 		fmt.Println("No .env file found")
 	}
 

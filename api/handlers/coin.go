@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/coins_service"
-	"go_tg_api_gateway/pkg/util"
+	"go_tg_api_gateway/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -37,7 +37,7 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 		return
 	}
 
-	imageURL, err := util.UploadImage(file)
+	imageURL, err := utils.UploadImage(file)
 	if err != nil {
 		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 		return
@@ -87,7 +87,7 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 func (h *Handler) GetCoinByID(c *gin.Context) {
 
 	CoinID := c.Param("id")
-	if !util.IsValidUUID(CoinID) {
+	if !utils.IsValidUUID(CoinID) {
 		h.handleResponse(c, http.InvalidArgument, "Coin id is an invalid uuid")
 		return
 	}
@@ -168,7 +168,7 @@ func (h *Handler) UpdateCoin(c *gin.Context) {
 
 	var Coin coins_service.UpdateCoin
 	Coin.Id = c.Param("id")
-	if !util.IsValidUUID(Coin.Id) {
+	if !utils.IsValidUUID(Coin.Id) {
 		h.handleResponse(c, http.InvalidArgument, "Coin id is an invalid uuid")
 		return
 	}
@@ -193,7 +193,7 @@ func (h *Handler) UpdateCoin(c *gin.Context) {
 
 // DeleteCoin godoc
 // @ID delete_coin
-// @Router /v1/coin/{id} [DELETE]
+// @Router /coin/{id} [DELETE]
 // @Summary Delete Coin
 // @Description Delete Coin
 // @Tags Coin
@@ -206,7 +206,7 @@ func (h *Handler) UpdateCoin(c *gin.Context) {
 func (h *Handler) DeleteCoin(c *gin.Context) {
 
 	CoinId := c.Param("id")
-	if !util.IsValidUUID(CoinId) {
+	if !utils.IsValidUUID(CoinId) {
 		h.handleResponse(c, http.InvalidArgument, "Coin id is an invalid uuid")
 		return
 	}

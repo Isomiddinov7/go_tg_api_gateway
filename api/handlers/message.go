@@ -4,14 +4,14 @@ import (
 	"context"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/users_service"
-	"go_tg_api_gateway/pkg/util"
+	"go_tg_api_gateway/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
 // CreateMessage godoc
 // @ID create_user_message
-// @Router /v1/user/message [POST]
+// @Router /user/message [POST]
 // @Summary Create Message
 // @Description  Create Message
 // @Tags User
@@ -30,7 +30,7 @@ func (h *Handler) CreateUserMessage(c *gin.Context) {
 	if err != nil {
 		h.handleResponse(c, http.ErrMissingFile, gin.H{"error": "http: no such file"})
 	} else {
-		imageURL, err := util.UploadImage(file)
+		imageURL, err := utils.UploadImage(file)
 		if err != nil {
 			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 			return
@@ -55,7 +55,7 @@ func (h *Handler) CreateUserMessage(c *gin.Context) {
 
 // CreateMessage godoc
 // @ID create_admin_message
-// @Router /v1/admin/message [POST]
+// @Router /admin/message [POST]
 // @Summary Create Message
 // @Description  Create Message
 // @Tags Admin
@@ -74,7 +74,7 @@ func (h *Handler) CreateAdminMessage(c *gin.Context) {
 	if err != nil {
 		h.handleResponse(c, http.ErrMissingFile, gin.H{"error": "http: no such file"})
 	} else {
-		imageURL, err := util.UploadImage(file)
+		imageURL, err := utils.UploadImage(file)
 		if err != nil {
 			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 			return
@@ -98,7 +98,7 @@ func (h *Handler) CreateAdminMessage(c *gin.Context) {
 
 // UpdateMessage godoc
 // @ID update_message
-// @Router /v1/message/{id} [PUT]
+// @Router /message/{id} [PUT]
 // @Summary Update Message
 // @Description Update Message
 // @Tags Message
@@ -113,7 +113,7 @@ func (h *Handler) UpdateMessage(c *gin.Context) {
 
 	var message users_service.UpdateMessageRequest
 	message.Id = c.Param("id")
-	if !util.IsValidUUID(message.Id) {
+	if !utils.IsValidUUID(message.Id) {
 		h.handleResponse(c, http.InvalidArgument, "Message id is an invalid uuid")
 		return
 	}
@@ -138,7 +138,7 @@ func (h *Handler) UpdateMessage(c *gin.Context) {
 
 // GetUserMessageByID godoc
 // @ID get_user_message_by_id
-// @Router /v1/user/message/{id} [GET]
+// @Router /user/message/{id} [GET]
 // @Summary Get User Message  By ID
 // @Description Get User Message  By ID
 // @Tags User Message
@@ -150,7 +150,7 @@ func (h *Handler) UpdateMessage(c *gin.Context) {
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetUserMessage(c *gin.Context) {
 	user_id := c.Param("id")
-	if !util.IsValidUUID(user_id) {
+	if !utils.IsValidUUID(user_id) {
 		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
 		return
 	}
@@ -172,7 +172,7 @@ func (h *Handler) GetUserMessage(c *gin.Context) {
 
 // GetUserMessageByID godoc
 // @ID get_admin_all_message_by_id
-// @Router /v1/admin/message/ [GET]
+// @Router /admin/message/ [GET]
 // @Summary Get Admin Message  By ID
 // @Description Get Admin Message  By ID
 // @Tags Admin Message
@@ -198,7 +198,7 @@ func (h *Handler) GetAdminAllMessage(c *gin.Context) {
 
 // GetAdminMessageByID godoc
 // @ID get_admin_message_by_id
-// @Router /v1/admin/message/{id} [GET]
+// @Router /admin/message/{id} [GET]
 // @Summary Get Admin Message  By ID
 // @Description Get Admin Message  By ID
 // @Tags Admin Message
@@ -210,7 +210,7 @@ func (h *Handler) GetAdminAllMessage(c *gin.Context) {
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetAdminMessage(c *gin.Context) {
 	user_id := c.Param("id")
-	if !util.IsValidUUID(user_id) {
+	if !utils.IsValidUUID(user_id) {
 		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
 		return
 	}
@@ -232,7 +232,7 @@ func (h *Handler) GetAdminMessage(c *gin.Context) {
 
 // GetMessageAdminID godoc
 // @ID get_message_admin_id
-// @Router /v1/admin/message/user/{id} [GET]
+// @Router /admin/message/user/{id} [GET]
 // @Summary Get Admin Message  By ID
 // @Description Get Admin Message  By ID
 // @Tags Admin Message
@@ -244,7 +244,7 @@ func (h *Handler) GetAdminMessage(c *gin.Context) {
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetMessageAdminID(c *gin.Context) {
 	user_id := c.Param("id")
-	if !util.IsValidUUID(user_id) {
+	if !utils.IsValidUUID(user_id) {
 		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
 		return
 	}

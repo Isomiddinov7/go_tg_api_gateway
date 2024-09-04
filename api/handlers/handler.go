@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"go_tg_api_gateway/api/http"
+	"go_tg_api_gateway/api/models"
 	"go_tg_api_gateway/config"
 	"go_tg_api_gateway/pkg/logger"
 	"go_tg_api_gateway/services"
@@ -93,17 +94,17 @@ func (h *Handler) getLimitParam(c *gin.Context) (offset int, err error) {
 	return strconv.Atoi(limitStr)
 }
 
-func (h *Handler) handleErrorResponse(c *gin.Context, code int, message string, err interface{}) {
-	h.log.Error(message, logger.Int("code", code), logger.Any("error", err))
-	c.JSON(code, ResponseModel{
-		Code:    code,
-		Message: message,
-		Error:   err,
-	})
-}
+// func (h *Handler) handleErrorResponse(c *gin.Context, code int, message string, err interface{}) {
+// 	h.log.Error(message, logger.Int("code", code), logger.Any("error", err))
+// 	c.JSON(code, models.ResponseModel{
+// 		Code:    code,
+// 		Message: message,
+// 		Error:   err,
+// 	})
+// }
 
 func (h *Handler) handleSuccessResponse(c *gin.Context, code int, message string, data interface{}) {
-	c.JSON(code, ResponseModel{
+	c.JSON(code, models.ResponseModel{
 		Code:    code,
 		Message: message,
 		Data:    data,

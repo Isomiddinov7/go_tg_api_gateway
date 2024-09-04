@@ -17,13 +17,13 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.Use(middlewares.Cors())
 	r.Use(MaxAllowed(5000))
 
-	r.POST("/login", h.Login)
+	r.POST("/login", h.Auth)
 
-	r.POST("/coin", h.CreateCoin)
-	r.GET("/coin/:id", h.GetCoinByID)
-	r.GET("/coin", h.GetCoinList)
-	r.PUT("/coin/:id", h.UpdateCoin)
-	r.DELETE("/coin/:id", h.DeleteCoin)
+	r.POST("/coin", h.DeserializeUser(), h.CreateCoin)
+	r.GET("/coin/:id", h.DeserializeUser(), h.GetCoinByID)
+	r.GET("/coin", h.DeserializeUser(), h.GetCoinList)
+	r.PUT("/coin/:id", h.DeserializeUser(), h.UpdateCoin)
+	r.DELETE("/coin/:id", h.DeserializeUser(), h.DeleteCoin)
 
 	r.POST("/sell", h.GetSell)
 	r.POST("/buy", h.GetBuy)
@@ -33,11 +33,11 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.GET("/user/sell", h.AllUserSell)
 	r.GET("/user/buy", h.AllUserBuy)
 
-	r.POST("/admin/message", h.CreateAdminMessage)
+	r.POST("/admin/message", h.DeserializeUser(), h.CreateAdminMessage)
 	r.PUT("/message/:id", h.UpdateMessage)
-	r.GET("/admin/message", h.GetAdminAllMessage)
-	r.GET("/admin/message/:id", h.GetUserMessage)
-	r.GET("/admin/message/user/:id", h.GetMessageAdminID)
+	r.GET("/admin/message", h.DeserializeUser(), h.GetAdminAllMessage)
+	r.GET("/admin/message/:id", h.DeserializeUser(), h.GetUserMessage)
+	r.GET("/admin/message/user/:id", h.DeserializeUser(), h.GetMessageAdminID)
 
 	r.GET("/history/user", h.HistoryUser)
 

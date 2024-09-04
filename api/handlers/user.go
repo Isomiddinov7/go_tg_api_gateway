@@ -4,14 +4,14 @@ import (
 	"context"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/users_service"
-	"go_tg_api_gateway/pkg/util"
+	"go_tg_api_gateway/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
 // CreateUser godoc
 // @ID create_user
-// @Router /v1/user [POST]
+// @Router /user [POST]
 // @Summary Create User
 // @Description  Create User
 // @Tags User
@@ -46,7 +46,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 
 // GetUserByID godoc
 // @ID get_user_by_id
-// @Router /v1/user/{id} [GET]
+// @Router /user/{id} [GET]
 // @Summary Get User  By ID
 // @Description Get User  By ID
 // @Tags User
@@ -58,17 +58,12 @@ func (h *Handler) CreateUser(c *gin.Context) {
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetUserByID(c *gin.Context) {
 
-	UserID := c.Param("id")
-
-	if !util.IsValidUUID(UserID) {
-		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
-		return
-	}
+	telegram_id := c.Param("telegram_id")
 
 	resp, err := h.services.UserService().GetById(
 		context.Background(),
 		&users_service.UserPrimaryKey{
-			Id: UserID,
+			Id: telegram_id,
 		},
 	)
 
@@ -83,7 +78,7 @@ func (h *Handler) GetUserByID(c *gin.Context) {
 // @Security ApiKeyAuth
 // GetUserList godoc
 // @ID get_user_list
-// @Router /v1/user [GET]
+// @Router /user [GET]
 // @Summary Get Users List
 // @Description  Get Users List
 // @Tags User
@@ -128,7 +123,7 @@ func (h *Handler) GetUserList(c *gin.Context) {
 
 // UpdateUser godoc
 // @ID update_user
-// @Router /v1/user/{id} [PUT]
+// @Router /user/{id} [PUT]
 // @Summary Update User
 // @Description Update User
 // @Tags User
@@ -145,7 +140,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 
 	user.Id = c.Param("id")
 
-	if !util.IsValidUUID(user.Id) {
+	if !utils.IsValidUUID(user.Id) {
 		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
 		return
 	}
