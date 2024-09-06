@@ -1429,7 +1429,7 @@ const docTemplate = `{
             "post": {
                 "description": "UserBuy",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -1815,7 +1815,7 @@ const docTemplate = `{
             "post": {
                 "description": "UserSell",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"

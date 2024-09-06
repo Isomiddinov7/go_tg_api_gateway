@@ -1418,7 +1418,7 @@
             "post": {
                 "description": "UserBuy",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -1804,7 +1804,7 @@
             "post": {
                 "description": "UserSell",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"

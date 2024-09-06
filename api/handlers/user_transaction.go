@@ -15,7 +15,7 @@ import (
 // @Summary UserSell
 // @Description  UserSell
 // @Tags User
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
 // @Param file formData file true "Upload file"
 // @Param userId formData string true "User ID"
@@ -68,7 +68,7 @@ func (h *Handler) UserSell(c *gin.Context) {
 // @Summary UserBuy
 // @Description  UserBuy
 // @Tags User
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
 // @Param file formData file true "Upload file"
 // @Param userId formData string true "User ID"

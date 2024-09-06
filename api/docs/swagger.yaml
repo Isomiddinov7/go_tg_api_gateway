@@ -1196,7 +1196,7 @@ paths:
       - User
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: UserBuy
       operationId: User_buy
       parameters:
@@ -1418,7 +1418,7 @@ paths:
       - User
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: UserSell
       operationId: User_sell
       parameters:
