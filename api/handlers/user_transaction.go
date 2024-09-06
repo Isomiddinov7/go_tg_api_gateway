@@ -23,6 +23,7 @@ import (
 // @Param coin_amount formData string true "CoinAmount"
 // @Param message formData string true "Message"
 // @Param card_number formData string true "Card Number"
+// @Param card_holder_name formData string true "Card Holder Name"
 // @Success 200 {object} http.Response{data=string} "GetUserSellBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
@@ -46,6 +47,7 @@ func (h *Handler) UserSell(c *gin.Context) {
 	user_sell.CoinAmount = c.PostForm("coin_amount")
 	user_sell.Message = c.PostForm("message")
 	user_sell.CardNumber = c.PostForm("card_number")
+	user_sell.CardHolderName = c.PostForm("card_holder_name")
 	user_sell.CheckImg = imageURL
 
 	_, err = h.services.UserTransaction().UserSell(

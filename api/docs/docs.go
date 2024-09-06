@@ -1867,6 +1867,13 @@ const docTemplate = `{
                         "name": "card_number",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card Holder Name",
+                        "name": "card_holder_name",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {

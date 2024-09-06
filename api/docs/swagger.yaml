@@ -1452,6 +1452,11 @@ paths:
         name: card_number
         required: true
         type: string
+      - description: Card Holder Name
+        in: formData
+        name: card_holder_name
+        required: true
+        type: string
       produces:
       - application/json
       responses:
