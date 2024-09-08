@@ -832,7 +832,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "user_id",
+                        "description": "id",
                         "name": "user_id",
                         "in": "query",
                         "required": true

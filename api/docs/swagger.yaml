@@ -763,7 +763,7 @@ paths:
       description: Get History Users List
       operationId: get_history_user_list
       parameters:
-      - description: user_id
+      - description: id
         in: query
         name: user_id
         required: true
