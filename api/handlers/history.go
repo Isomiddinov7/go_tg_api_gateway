@@ -18,7 +18,7 @@ import (
 // @Tags History
 // @Accept json
 // @Produce json
-// @Param user_id query integer true "user_id"
+// @Param user_id query string true "user_id"
 // @Success 200 {object} http.Response{data=coins_service.HistoryUserResponse} "GetHistoryUserResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"

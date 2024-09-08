@@ -831,7 +831,7 @@ const docTemplate = `{
                 "operationId": "get_history_user_list",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "user_id",
                         "name": "user_id",
                         "in": "query",

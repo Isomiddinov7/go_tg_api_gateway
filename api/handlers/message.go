@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/users_service"
 	"go_tg_api_gateway/pkg/utils"
@@ -27,30 +28,51 @@ func (h *Handler) CreateUserMessage(c *gin.Context) {
 
 	var message users_service.MessageRequest
 	file, err := c.FormFile("file")
-	if err != nil {
-		h.handleResponse(c, http.ErrMissingFile, gin.H{"error": "http: no such file"})
-	} else {
-		imageURL, err := utils.UploadImage(file)
+	fmt.Println(file)
+	if file != nil {
 		if err != nil {
-			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
+			h.handleResponse(c, http.ErrMissingFile, gin.H{"error": "http: no such file"})
+		} else {
+			imageURL, err := utils.UploadImage(file)
+			if err != nil {
+				h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
+				return
+			}
+			message.File = imageURL
+
+			message.Text = c.PostForm("text")
+			message.UserId = c.PostForm("user_id")
+
+			_, err = h.services.Messages().CreateUserMessage(
+				c.Request.Context(),
+				&message,
+			)
+			if err != nil {
+				h.handleResponse(c, http.InternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+
+			h.handleResponse(c, http.Created, gin.H{"message": "Message created successfully"})
+
+		}
+	} else {
+
+		message.File = ""
+		message.Text = c.PostForm("text")
+		message.UserId = c.PostForm("user_id")
+
+		_, err = h.services.Messages().CreateUserMessage(
+			c.Request.Context(),
+			&message,
+		)
+		if err != nil {
+			h.handleResponse(c, http.InternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		message.File = imageURL
+
+		h.handleResponse(c, http.Created, gin.H{"message": "Message created successfully"})
 	}
 
-	message.Text = c.PostForm("text")
-	message.UserId = c.PostForm("user_id")
-
-	_, err = h.services.Messages().CreateUserMessage(
-		c.Request.Context(),
-		&message,
-	)
-	if err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	h.handleResponse(c, http.Created, gin.H{"message": "Message created successfully"})
 }
 
 // CreateMessage godoc
@@ -71,29 +93,32 @@ func (h *Handler) CreateAdminMessage(c *gin.Context) {
 
 	var message users_service.MessageRequest
 	file, err := c.FormFile("file")
-	if err != nil {
-		h.handleResponse(c, http.ErrMissingFile, gin.H{"error": "http: no such file"})
-	} else {
-		imageURL, err := utils.UploadImage(file)
+	if file != nil {
 		if err != nil {
-			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
+			h.handleResponse(c, http.ErrMissingFile, gin.H{"error": "http: no such file"})
+		} else {
+			imageURL, err := utils.UploadImage(file)
+			if err != nil {
+				h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
+				return
+			}
+			message.File = imageURL
+		}
+	} else {
+		message.File = ""
+		message.Text = c.PostForm("text")
+		message.UserId = c.PostForm("user_id")
+		_, err = h.services.Messages().CreateAdminMessage(
+			c.Request.Context(),
+			&message,
+		)
+		if err != nil {
+			h.handleResponse(c, http.InternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		message.File = imageURL
-	}
 
-	message.Text = c.PostForm("text")
-	message.UserId = c.PostForm("user_id")
-	_, err = h.services.Messages().CreateAdminMessage(
-		c.Request.Context(),
-		&message,
-	)
-	if err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": err.Error()})
-		return
+		h.handleResponse(c, http.Created, gin.H{"message": "Message created successfully"})
 	}
-
-	h.handleResponse(c, http.Created, gin.H{"message": "Message created successfully"})
 }
 
 // UpdateMessage godoc
