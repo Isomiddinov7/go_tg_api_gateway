@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/coins_service"
 	"go_tg_api_gateway/pkg/utils"
@@ -25,8 +24,7 @@ import (
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) HistoryUser(c *gin.Context) {
 
-	UserID := c.Query("id")
-	fmt.Println(UserID)
+	UserID := c.Query("user_id")
 	if !utils.IsValidUUID(UserID) {
 		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
 		return

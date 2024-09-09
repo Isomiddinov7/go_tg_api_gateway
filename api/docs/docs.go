@@ -2307,16 +2307,19 @@ const docTemplate = `{
                 "coin_amount": {
                     "type": "string"
                 },
-                "coin_img": {
+                "coin_price": {
                     "type": "string"
                 },
-                "coin_price": {
+                "confirm_img": {
                     "type": "string"
                 },
                 "date_time": {
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "status": {

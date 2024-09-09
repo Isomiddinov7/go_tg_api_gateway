@@ -72,13 +72,15 @@ definitions:
         type: string
       coin_amount:
         type: string
-      coin_img:
-        type: string
       coin_price:
+        type: string
+      confirm_img:
         type: string
       date_time:
         type: string
       id:
+        type: string
+      name:
         type: string
       status:
         type: string
