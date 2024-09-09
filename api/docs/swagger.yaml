@@ -758,6 +758,46 @@ paths:
       summary: Get Coin  By ID
       tags:
       - Coin
+  /history:
+    get:
+      consumes:
+      - application/json
+      description: Get History Users List
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetHistoryUserResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.HistoryUserResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get History Users List
+      tags:
+      - History
   /history/user:
     get:
       consumes:
