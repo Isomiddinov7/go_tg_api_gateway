@@ -201,3 +201,46 @@ func (h *Handler) AllUserBuy(c *gin.Context) {
 
 	h.handleResponse(c, http.OK, resp)
 }
+
+// TransactionUpdate godoc
+// @ID update_user
+// @Router /premium/transaction/:id [PUT]
+// @Summary TransactionUpdate
+// @Description TransactionUpdate
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Param profile body users_service.UpdateTransaction true "UpdateTransactionBody"
+// @Success 200 {object} http.Response{data=string} "User data"
+// @Response 400 {object} http.Response{data=string} "Bad Request"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) TransactionUpdate(c *gin.Context) {
+
+	var data users_service.UpdateTransaction
+
+	data.Id = c.Param("id")
+
+	if !utils.IsValidUUID(data.Id) {
+		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
+		return
+	}
+
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	_, err = h.services.UserTransaction().TransactionUpdate(
+		c.Request.Context(),
+		&data,
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, "1")
+}

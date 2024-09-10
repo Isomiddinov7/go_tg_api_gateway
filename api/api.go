@@ -57,6 +57,7 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.GET("/premium/:id", h.DeserializeUser(), h.GetPremiumById)
 	r.GET("/premium/transaction", h.DeserializeUser(), h.GetList)
 	r.PUT("/premium/:id", h.DeserializeUser(), h.UpdateTransactionStatus)
+	r.PUT("/premium/transaction/:id", h.DeserializeUser(), h.TransactionUpdate)
 	r.POST("/premium/transaction", h.DeserializeUser(), h.PremiumTransaction)
 
 	url := ginSwagger.URL("swagger/doc.json")

@@ -295,6 +295,13 @@ definitions:
       read:
         type: string
     type: object
+  users_service.UpdateTransaction:
+    properties:
+      id:
+        type: string
+      transaction_status:
+        type: string
+    type: object
   users_service.UpdateUser:
     properties:
       id:
@@ -1374,6 +1381,57 @@ paths:
       summary: Create Premium Transaction
       tags:
       - Premium
+  /premium/transaction/:id:
+    put:
+      consumes:
+      - application/json
+      description: TransactionUpdate
+      operationId: update_user
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UpdateTransactionBody
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/users_service.UpdateTransaction'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: TransactionUpdate
+      tags:
+      - User
   /sell:
     post:
       consumes:
