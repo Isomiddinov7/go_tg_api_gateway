@@ -256,3 +256,46 @@ func (h *Handler) GetList(c *gin.Context) {
 
 	h.handleResponse(c, http.OK, resp)
 }
+
+// @Security ApiKeyAuth
+// GetPremiumList godoc
+// @ID get_premium_list
+// @Router /premium [GET]
+// @Summary Get Premium Transaction List
+// @Description  Get Premium Transaction List
+// @Tags Premium
+// @Accept json
+// @Produce json
+// @Param offset query integer false "offset"
+// @Param limit query integer false "limit"
+// @Success 200 {object} http.Response{data=coins_service.GetPremiumListResponse} "GetPremiumListResponseBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetPremiumList(c *gin.Context) {
+
+	offset, err := h.getOffsetParam(c)
+	if err != nil {
+		h.handleResponse(c, http.InvalidArgument, err.Error())
+		return
+	}
+
+	limit, err := h.getLimitParam(c)
+	if err != nil {
+		h.handleResponse(c, http.InvalidArgument, err.Error())
+		return
+	}
+
+	resp, err := h.services.TelegramPremium().GetPremiumList(
+		c.Request.Context(),
+		&coins_service.GetPremiumListRequest{
+			Limit:  int64(limit),
+			Offset: int64(offset),
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
+}

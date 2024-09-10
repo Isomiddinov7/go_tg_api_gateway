@@ -64,6 +64,15 @@ definitions:
       count:
         type: integer
     type: object
+  coins_service.GetPremiumListResponse:
+    properties:
+      count:
+        type: integer
+      telegram_premium:
+        items:
+          $ref: '#/definitions/coins_service.TelegramPremium'
+        type: array
+    type: object
   coins_service.GetPremiumTransaction:
     properties:
       created_at:
@@ -1075,6 +1084,56 @@ paths:
       summary: Update Message
       tags:
       - Message
+  /premium:
+    get:
+      consumes:
+      - application/json
+      description: Get Premium Transaction List
+      operationId: get_premium_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetPremiumListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.GetPremiumListResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Premium Transaction List
+      tags:
+      - Premium
   /premium/{id}:
     get:
       consumes:
