@@ -2160,12 +2160,6 @@ const docTemplate = `{
                         "description": "limit",
                         "name": "limit",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "status",
-                        "name": "status",
-                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2545,12 +2539,6 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "limit",
                         "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "status",
-                        "name": "status",
                         "in": "query"
                     }
                 ],
@@ -3426,6 +3414,9 @@ const docTemplate = `{
                 "coin_amount": {
                     "type": "string"
                 },
+                "coin_img": {
+                    "type": "string"
+                },
                 "coin_price": {
                     "type": "string"
                 },
@@ -3471,6 +3462,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "coin_id": {
+                    "type": "string"
+                },
+                "coin_img": {
                     "type": "string"
                 },
                 "coin_price": {

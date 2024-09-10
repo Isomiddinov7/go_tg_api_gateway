@@ -123,7 +123,6 @@ func (h *Handler) UserBuy(c *gin.Context) {
 // @Produce json
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
-// @Param status query string false "status"
 // @Success 200 {object} http.Response{data=users_service.GetListUserSellTransactionResponse} "GetAllCoinResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
@@ -146,7 +145,6 @@ func (h *Handler) AllUserSell(c *gin.Context) {
 		&users_service.GetListUserTransactionRequest{
 			Limit:  int64(limit),
 			Offset: int64(offset),
-			Status: c.Query("status"),
 		},
 	)
 	if err != nil {
@@ -168,7 +166,6 @@ func (h *Handler) AllUserSell(c *gin.Context) {
 // @Produce json
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
-// @Param status query string false "status"
 // @Success 200 {object} http.Response{data=users_service.GetListUserBuyTransactionResponse} "GetAllCoinResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
@@ -191,7 +188,6 @@ func (h *Handler) AllUserBuy(c *gin.Context) {
 		&users_service.GetListUserTransactionRequest{
 			Limit:  int64(limit),
 			Offset: int64(offset),
-			Status: c.Query("status"),
 		},
 	)
 	if err != nil {

@@ -2149,12 +2149,6 @@
                         "description": "limit",
                         "name": "limit",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "status",
-                        "name": "status",
-                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2534,12 +2528,6 @@
                         "type": "integer",
                         "description": "limit",
                         "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "status",
-                        "name": "status",
                         "in": "query"
                     }
                 ],
@@ -3415,6 +3403,9 @@
                 "coin_amount": {
                     "type": "string"
                 },
+                "coin_img": {
+                    "type": "string"
+                },
                 "coin_price": {
                     "type": "string"
                 },
@@ -3460,6 +3451,9 @@
                     "type": "string"
                 },
                 "coin_id": {
+                    "type": "string"
+                },
+                "coin_img": {
                     "type": "string"
                 },
                 "coin_price": {
