@@ -17,6 +17,7 @@ type ServiceManagerI interface {
 	Messages() users_service.UserMessageListClient
 	Auth() users_service.AuthServiceClient
 	History() coins_service.HistoryServiceClient
+	TelegramPremium() coins_service.TelegramPremiumServiceClient
 }
 
 type grpcClients struct {
@@ -27,6 +28,7 @@ type grpcClients struct {
 	messageService         users_service.UserMessageListClient
 	auth                   users_service.AuthServiceClient
 	history                coins_service.HistoryServiceClient
+	telegram_premium       coins_service.TelegramPremiumServiceClient
 }
 
 func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
@@ -56,6 +58,7 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 		messageService:         users_service.NewUserMessageListClient(connUserService),
 		auth:                   users_service.NewAuthServiceClient(connUserService),
 		history:                coins_service.NewHistoryServiceClient(connCoinService),
+		telegram_premium:       coins_service.NewTelegramPremiumServiceClient(connCoinService),
 	}, nil
 }
 
@@ -85,4 +88,8 @@ func (g *grpcClients) Auth() users_service.AuthServiceClient {
 
 func (g *grpcClients) History() coins_service.HistoryServiceClient {
 	return g.history
+}
+
+func (g *grpcClients) TelegramPremium() coins_service.TelegramPremiumServiceClient {
+	return g.telegram_premium
 }

@@ -153,7 +153,7 @@ func (h *Handler) GetCoinList(c *gin.Context) {
 
 // UpdateCoin godoc
 // @ID update_coin
-// @Router /v1/coin/{id} [PUT]
+// @Router /coin/{id} [PUT]
 // @Summary Update Coin
 // @Description Update Coin
 // @Tags Coin

@@ -52,6 +52,13 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.POST("/user/message", h.CreateUserMessage)
 	r.GET("/user/message/:id", h.GetUserMessage)
 
+	r.POST("/premium/price", h.DeserializeUser(), h.CreatePrice)
+	r.POST("/premium/create", h.DeserializeUser(), h.CreatePremium)
+	r.GET("/premium/:id", h.DeserializeUser(), h.GetPremiumById)
+	r.GET("/premium/transaction", h.DeserializeUser(), h.GetList)
+	r.PUT("/premium/:id", h.DeserializeUser(), h.UpdateTransactionStatus)
+	r.POST("/premium/transaction", h.DeserializeUser(), h.PremiumTransaction)
+
 	url := ginSwagger.URL("swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 }
