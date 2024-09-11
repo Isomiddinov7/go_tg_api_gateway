@@ -29,12 +29,15 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.GET("/coin", h.GetCoinList)
 
 	r.POST("/sell", h.GetSell)
+	r.POST("/sell", h.GetSell)
 	r.POST("/buy", h.GetBuy)
 
 	r.POST("/user/sell", h.UserSell)
 	r.POST("/user/buy", h.UserBuy)
-	r.GET("/user/sell", h.AllUserSell)
-	r.GET("/user/buy", h.AllUserBuy)
+	r.GET("/user/sell", h.DeserializeUser(), h.AllUserSell)
+	r.GET("/user/buy/:id", h.DeserializeUser(), h.GetByIdTransactionBuy)
+	r.GET("/user/sell/:id", h.DeserializeUser(), h.GetByIdTransactionSell)
+	r.GET("/user/buy", h.DeserializeUser(), h.AllUserBuy)
 
 	r.POST("/admin/message", h.DeserializeUser(), h.CreateAdminMessage)
 	r.PUT("/message/:id", h.UpdateMessage)
@@ -54,11 +57,11 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.POST("/premium/price", h.DeserializeUser(), h.CreatePrice)
 	r.POST("/premium/create", h.DeserializeUser(), h.CreatePremium)
 	r.GET("/premium/:id", h.GetPremiumById)
-	r.GET("/premium/transaction", h.DeserializeUser(), h.GetList)
+	r.GET("/premium/transaction", h.GetList)
 	r.GET("/premium", h.GetPremiumList)
 	r.PUT("/premium/:id", h.DeserializeUser(), h.UpdateTransactionStatus)
-	r.PUT("/premium/transaction/:id", h.DeserializeUser(), h.TransactionUpdate)
-	r.POST("/premium/transaction", h.DeserializeUser(), h.PremiumTransaction)
+	r.PUT("/transaction/:id", h.DeserializeUser(), h.TransactionUpdate)
+	r.POST("/premium/transaction", h.PremiumTransaction)
 
 	url := ginSwagger.URL("swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

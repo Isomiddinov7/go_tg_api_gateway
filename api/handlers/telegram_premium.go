@@ -296,6 +296,5 @@ func (h *Handler) GetPremiumList(c *gin.Context) {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
-
 	h.handleResponse(c, http.OK, resp)
 }

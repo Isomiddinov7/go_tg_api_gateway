@@ -83,6 +83,8 @@ definitions:
         type: string
       name:
         type: string
+      phone_number:
+        type: string
       updated_at:
         type: string
       user_name:
@@ -395,6 +397,86 @@ definitions:
       transaction_status:
         type: string
       user_id:
+        type: string
+    type: object
+  users_service.UserTransactionBuy:
+    properties:
+      CheckImg:
+        type: string
+      all_price:
+        type: string
+      coin_amount:
+        type: string
+      coin_id:
+        type: string
+      coin_img:
+        type: string
+      coin_name:
+        type: string
+      coin_price:
+        type: string
+      created_at:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      status:
+        type: string
+      telegram_id:
+        type: string
+      transaction_status:
+        type: string
+      updated_at:
+        type: string
+      user_address:
+        type: string
+      user_id:
+        type: string
+      user_name:
+        type: string
+    type: object
+  users_service.UserTransactionSell:
+    properties:
+      CheckImg:
+        type: string
+      all_price:
+        type: string
+      card_holder_name:
+        type: string
+      card_number:
+        type: string
+      coin_amount:
+        type: string
+      coin_id:
+        type: string
+      coin_img:
+        type: string
+      coin_name:
+        type: string
+      coin_price:
+        type: string
+      created_at:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      status:
+        type: string
+      telegram_id:
+        type: string
+      transaction_status:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+      user_name:
         type: string
     type: object
 info:
@@ -1444,7 +1526,53 @@ paths:
       summary: Create Premium Transaction
       tags:
       - Premium
-  /premium/transaction/:id:
+  /sell:
+    post:
+      consumes:
+      - application/json
+      description: Get Sell
+      operationId: get_sell
+      parameters:
+      - description: BuyOrSellRequest
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/coins_service.BuyOrSellRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: SellBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.BuyOrSellResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Sell
+      tags:
+      - Sell
+  /transaction/:id:
     put:
       consumes:
       - application/json
@@ -1495,52 +1623,6 @@ paths:
       summary: TransactionUpdate
       tags:
       - User
-  /sell:
-    post:
-      consumes:
-      - application/json
-      description: Get Sell
-      operationId: get_sell
-      parameters:
-      - description: BuyOrSellRequest
-        in: body
-        name: profile
-        required: true
-        schema:
-          $ref: '#/definitions/coins_service.BuyOrSellRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: SellBody
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/coins_service.BuyOrSellResponse'
-              type: object
-        "400":
-          description: Invalid Argument
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Get Sell
-      tags:
-      - Sell
   /user:
     get:
       consumes:
@@ -1854,6 +1936,51 @@ paths:
       summary: UserBuy
       tags:
       - User
+  /user/buy/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get User Buy  By ID
+      operationId: get_user_buy_by_id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: CoinBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.UserTransactionBuy'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get User Buy  By ID
+      tags:
+      - User Buy
   /user/message:
     post:
       consumes:
@@ -2077,4 +2204,49 @@ paths:
       summary: UserSell
       tags:
       - User
+  /user/sell/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get User Sell  By ID
+      operationId: get_user_sell_by_id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: CoinBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.UserTransactionSell'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get User Sell  By ID
+      tags:
+      - User Sell
 swagger: "2.0"

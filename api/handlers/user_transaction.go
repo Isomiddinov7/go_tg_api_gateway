@@ -200,7 +200,7 @@ func (h *Handler) AllUserBuy(c *gin.Context) {
 
 // TransactionUpdate godoc
 // @ID update_user
-// @Router /premium/transaction/:id [PUT]
+// @Router /transaction/:id [PUT]
 // @Summary TransactionUpdate
 // @Description TransactionUpdate
 // @Tags User
@@ -239,4 +239,72 @@ func (h *Handler) TransactionUpdate(c *gin.Context) {
 	}
 
 	h.handleResponse(c, http.OK, "1")
+}
+
+// GetUserSellByID godoc
+// @ID get_user_sell_by_id
+// @Router /user/sell/{id} [GET]
+// @Summary Get User Sell  By ID
+// @Description Get User Sell  By ID
+// @Tags User Sell
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Success 200 {object} http.Response{data=users_service.UserTransactionSell} "CoinBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetByIdTransactionSell(c *gin.Context) {
+
+	Id := c.Param("id")
+	if !utils.IsValidUUID(Id) {
+		h.handleResponse(c, http.InvalidArgument, "User Sell id is an invalid uuid")
+		return
+	}
+
+	resp, err := h.services.UserTransaction().GetByIdTransactionSell(
+		context.Background(),
+		&users_service.TransactioPrimaryKey{
+			Id: Id,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
+}
+
+// GetUserSellByID godoc
+// @ID get_user_buy_by_id
+// @Router /user/buy/{id} [GET]
+// @Summary Get User Buy  By ID
+// @Description Get User Buy  By ID
+// @Tags User Buy
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Success 200 {object} http.Response{data=users_service.UserTransactionBuy} "CoinBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetByIdTransactionBuy(c *gin.Context) {
+
+	Id := c.Param("id")
+	if !utils.IsValidUUID(Id) {
+		h.handleResponse(c, http.InvalidArgument, "User Buy id is an invalid uuid")
+		return
+	}
+
+	resp, err := h.services.UserTransaction().GetByIdTransactionBuy(
+		context.Background(),
+		&users_service.TransactioPrimaryKey{
+			Id: Id,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
 }
