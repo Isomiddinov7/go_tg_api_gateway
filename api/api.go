@@ -29,7 +29,6 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.GET("/coin", h.GetCoinList)
 
 	r.POST("/sell", h.GetSell)
-	r.POST("/sell", h.GetSell)
 	r.POST("/buy", h.GetBuy)
 
 	r.POST("/user/sell", h.UserSell)
