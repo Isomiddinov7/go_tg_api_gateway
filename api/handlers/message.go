@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/users_service"
 	"go_tg_api_gateway/pkg/utils"
@@ -28,7 +27,6 @@ func (h *Handler) CreateUserMessage(c *gin.Context) {
 
 	var message users_service.MessageRequest
 	file, err := c.FormFile("file")
-	fmt.Println(file)
 	if file != nil {
 		if err != nil {
 			h.handleResponse(c, http.ErrMissingFile, gin.H{"error": "http: no such file"})
@@ -103,6 +101,18 @@ func (h *Handler) CreateAdminMessage(c *gin.Context) {
 				return
 			}
 			message.File = imageURL
+			message.Text = c.PostForm("text")
+			message.UserId = c.PostForm("user_id")
+			_, err = h.services.Messages().CreateAdminMessage(
+				c.Request.Context(),
+				&message,
+			)
+			if err != nil {
+				h.handleResponse(c, http.InternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+
+			h.handleResponse(c, http.Created, gin.H{"message": "Message created successfully"})
 		}
 	} else {
 		message.File = ""

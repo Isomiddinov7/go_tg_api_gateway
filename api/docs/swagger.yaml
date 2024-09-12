@@ -208,16 +208,10 @@ definitions:
     properties:
       file:
         type: string
-      first_name:
-        type: string
       last_message:
-        type: string
-      last_name:
         type: string
       message_count:
         type: integer
-      user_id:
-        type: string
     type: object
   users_service.CreateUser:
     properties:
@@ -265,6 +259,12 @@ definitions:
         type: array
       count:
         type: integer
+      first_name:
+        type: string
+      last_name:
+        type: string
+      user_id:
+        type: string
     type: object
   users_service.GetMessageUserResponse:
     properties:

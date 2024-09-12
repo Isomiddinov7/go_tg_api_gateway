@@ -38,11 +38,17 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.GET("/user/sell/:id", h.DeserializeUser(), h.GetByIdTransactionSell)
 	r.GET("/user/buy", h.DeserializeUser(), h.AllUserBuy)
 
-	r.POST("/admin/message", h.DeserializeUser(), h.CreateAdminMessage)
+	// r.POST("/admin/message", h.DeserializeUser(), h.CreateAdminMessage)
+	// r.PUT("/message/:id", h.UpdateMessage)
+	// r.GET("/admin/message", h.DeserializeUser(), h.GetAdminAllMessage)
+	// r.GET("/admin/message/:id", h.DeserializeUser(), h.GetUserMessage)
+	// r.GET("/admin/message/user/:id", h.DeserializeUser(), h.GetMessageAdminID)
+
+	r.POST("/admin/message", h.CreateAdminMessage)
 	r.PUT("/message/:id", h.UpdateMessage)
-	r.GET("/admin/message", h.DeserializeUser(), h.GetAdminAllMessage)
-	r.GET("/admin/message/:id", h.DeserializeUser(), h.GetUserMessage)
-	r.GET("/admin/message/user/:id", h.DeserializeUser(), h.GetMessageAdminID)
+	r.GET("/admin/message", h.GetAdminAllMessage)
+	r.GET("/admin/message/:id", h.GetUserMessage)
+	r.GET("/admin/message/user/:id", h.GetMessageAdminID)
 
 	r.GET("/history/user", h.DeserializeUser(), h.HistoryUser)
 

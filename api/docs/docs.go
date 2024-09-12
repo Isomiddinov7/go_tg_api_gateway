@@ -3466,20 +3466,11 @@ const docTemplate = `{
                 "file": {
                     "type": "string"
                 },
-                "first_name": {
-                    "type": "string"
-                },
                 "last_message": {
-                    "type": "string"
-                },
-                "last_name": {
                     "type": "string"
                 },
                 "message_count": {
                     "type": "integer"
-                },
-                "user_id": {
-                    "type": "string"
                 }
             }
         },
@@ -3553,6 +3544,15 @@ const docTemplate = `{
                 },
                 "count": {
                     "type": "integer"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
                 }
             }
         },
