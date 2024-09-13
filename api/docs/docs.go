@@ -1952,7 +1952,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/send-message/{id}": {
+        "/send-message": {
             "post": {
                 "description": "POST Telegram Message",
                 "consumes": [
@@ -1965,7 +1965,7 @@ const docTemplate = `{
                     "Telegram Message"
                 ],
                 "summary": "POST Telegram Message",
-                "operationId": "get_message_telegram_id",
+                "operationId": "post_message",
                 "parameters": [
                     {
                         "type": "file",
@@ -1976,8 +1976,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Telegram Id",
-                        "name": "telegram_id",
+                        "description": "User Id",
+                        "name": "user_id",
                         "in": "formData",
                         "required": true
                     },
@@ -2001,7 +2001,88 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/users_service.TelegramMessageResponse"
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/send-message/{id}": {
+            "get": {
+                "description": "POST Telegram Message",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Telegram Message"
+                ],
+                "summary": "POST Telegram Message",
+                "operationId": "get_message_telegram_id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "TelegramMessageResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/users_service.PaymsqResponse"
                                         }
                                     }
                                 }
@@ -3711,6 +3792,37 @@ const docTemplate = `{
                 }
             }
         },
+        "users_service.Paymsq": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "file": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "users_service.PaymsqResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/users_service.Paymsq"
+                    }
+                }
+            }
+        },
         "users_service.Req": {
             "type": "object",
             "properties": {
@@ -3718,20 +3830,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "users_service.TelegramMessageResponse": {
-            "type": "object",
-            "properties": {
-                "file": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "telegram_id": {
                     "type": "string"
                 }
             }

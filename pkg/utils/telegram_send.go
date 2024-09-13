@@ -7,11 +7,10 @@ import (
 	"go_tg_api_gateway/api/models"
 	"go_tg_api_gateway/genproto/users_service"
 	"net/http"
-	"os"
 )
 
 func SendMessageToTelegram(req *users_service.TelegramMessageResponse) error {
-	token := os.Getenv("TELEGRAM_BOT_TOKEN")
+	token := "7135277002:AAG9phZbadRo-iafeN6fQDvMVPyrGtN-k3E"
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", token)
 
 	msg := models.MessageResponse{
@@ -19,7 +18,6 @@ func SendMessageToTelegram(req *users_service.TelegramMessageResponse) error {
 		Message: req.Message,
 		File:    req.File,
 	}
-
 	data, err := json.Marshal(msg)
 	if err != nil {
 		return err

@@ -299,22 +299,63 @@ func (h *Handler) GetMessageAdminID(c *gin.Context) {
 
 }
 
+// // GetSendMessageUserTelegram godoc
+// // @ID get_message_telegram_id
+// // @Router /send-message [POST]
+// // @Summary POST Telegram Message
+// // @Description POST Telegram Message
+// // @Tags Telegram Message
+// // @Accept multipart/form-data
+// // @Produce json
+// // @Param file formData file true "Upload file"
+// // @Param telegram_id formData string true "Telegram Id"
+// // @Param message formData string true "Message"
+// // @Success 200 {object} http.Response{data=users_service.TelegramMessageResponse} "TelegramMessageResponseBody"
+// // @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// // @Failure 500 {object} http.Response{data=string} "Server Error"
+// func (h *Handler) SendMessageUser(c *gin.Context) {
+
+// 	file, err := c.FormFile("file")
+// 	if err != nil {
+// 		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
+// 		return
+// 	}
+
+// 	imageURL, err := utils.UploadImage(file)
+// 	if err != nil {
+// 		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
+// 		return
+// 	}
+
+// 	var message users_service.TelegramMessageResponse
+
+// 	message.TelegramId = c.PostForm("telegram_id")
+// 	message.Message = c.PostForm("message")
+// 	message.File = imageURL
+// 	err = utils.SendMessageToTelegram(&message)
+// 	if err != nil {
+// 		h.handleResponse(c, http.InternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
+// 	h.handleResponse(c, http.OK, &message)
+
+// }
+
 // GetSendMessageUserTelegram godoc
-// @ID get_message_telegram_id
-// @Router /send-message/{id} [POST]
+// @ID post_message
+// @Router /send-message [POST]
 // @Summary POST Telegram Message
 // @Description POST Telegram Message
 // @Tags Telegram Message
 // @Accept multipart/form-data
 // @Produce json
 // @Param file formData file true "Upload file"
-// @Param telegram_id formData string true "Telegram Id"
+// @Param user_id formData string true "User Id"
 // @Param message formData string true "Message"
-// @Success 200 {object} http.Response{data=users_service.TelegramMessageResponse} "TelegramMessageResponseBody"
+// @Success 200 {object} http.Response{data=string} "TelegramMessageResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) SendMessageUser(c *gin.Context) {
-
+func (h *Handler) PayMessagePost(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
@@ -327,16 +368,54 @@ func (h *Handler) SendMessageUser(c *gin.Context) {
 		return
 	}
 
-	var message users_service.TelegramMessageResponse
+	var message users_service.PaymsqRequest
 
-	message.TelegramId = c.PostForm("telegram_id")
+	message.UserId = c.PostForm("user_id")
 	message.Message = c.PostForm("message")
 	message.File = imageURL
-	err = utils.SendMessageToTelegram(&message)
+
+	_, err = h.services.Messages().PayMessagePost(
+		c.Request.Context(),
+		&message,
+	)
 	if err != nil {
-		h.handleResponse(c, http.NoContent, err.Error())
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	h.handleResponse(c, http.OK, &message)
+	h.handleResponse(c, http.Created, gin.H{"message": "Message created successfully"})
+
+}
+
+// GetSendMessageUserTelegram godoc
+// @ID get_message_telegram_id
+// @Router /send-message/{id} [GET]
+// @Summary POST Telegram Message
+// @Description POST Telegram Message
+// @Tags Telegram Message
+// @Accept multipart/form-data
+// @Produce json
+// @Param id path string true "id"
+// @Success 200 {object} http.Response{data=users_service.PaymsqResponse} "TelegramMessageResponseBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) PayMessageGet(c *gin.Context) {
+	user_id := c.Param("id")
+	if !utils.IsValidUUID(user_id) {
+		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
+		return
+	}
+
+	resp, err := h.services.Messages().PayMessageGet(
+		context.Background(),
+		&users_service.PaymsqUser{
+			UserId: user_id,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
 
 }

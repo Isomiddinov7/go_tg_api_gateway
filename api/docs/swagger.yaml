@@ -305,20 +305,31 @@ definitions:
       user_id:
         type: string
     type: object
+  users_service.Paymsq:
+    properties:
+      created_at:
+        type: string
+      file:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  users_service.PaymsqResponse:
+    properties:
+      message:
+        items:
+          $ref: '#/definitions/users_service.Paymsq'
+        type: array
+    type: object
   users_service.Req:
     properties:
       login:
         type: string
       password:
-        type: string
-    type: object
-  users_service.TelegramMessageResponse:
-    properties:
-      file:
-        type: string
-      message:
-        type: string
-      telegram_id:
         type: string
     type: object
   users_service.UpdateMessageRequest:
@@ -1594,21 +1605,21 @@ paths:
       summary: Get Sell
       tags:
       - Sell
-  /send-message/{id}:
+  /send-message:
     post:
       consumes:
       - multipart/form-data
       description: POST Telegram Message
-      operationId: get_message_telegram_id
+      operationId: post_message
       parameters:
       - description: Upload file
         in: formData
         name: file
         required: true
         type: file
-      - description: Telegram Id
+      - description: User Id
         in: formData
-        name: telegram_id
+        name: user_id
         required: true
         type: string
       - description: Message
@@ -1626,7 +1637,52 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/users_service.TelegramMessageResponse'
+                  type: string
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: POST Telegram Message
+      tags:
+      - Telegram Message
+  /send-message/{id}:
+    get:
+      consumes:
+      - multipart/form-data
+      description: POST Telegram Message
+      operationId: get_message_telegram_id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: TelegramMessageResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.PaymsqResponse'
               type: object
         "400":
           description: Invalid Argument
