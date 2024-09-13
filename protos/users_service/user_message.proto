@@ -57,8 +57,9 @@ message AdminResponseMessage{
     string last_message = 1;
     string file = 2;
     string read = 3;
-    string created_at = 4;
-    string updated_at = 5;
+    string status = 4;
+    string created_at = 5;
+    string updated_at = 6;
 }
 
 message AdminResponse{

@@ -3590,6 +3590,9 @@ const docTemplate = `{
                 "read": {
                     "type": "string"
                 },
+                "status": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 }
