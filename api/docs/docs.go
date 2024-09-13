@@ -3463,14 +3463,40 @@ const docTemplate = `{
         "users_service.AdminResponse": {
             "type": "object",
             "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/users_service.AdminResponseMessage"
+                    }
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "users_service.AdminResponseMessage": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "file": {
                     "type": "string"
                 },
                 "last_message": {
                     "type": "string"
                 },
-                "message_count": {
-                    "type": "integer"
+                "read": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -3542,17 +3568,8 @@ const docTemplate = `{
                         "$ref": "#/definitions/users_service.AdminResponse"
                     }
                 },
-                "count": {
+                "message_count": {
                     "type": "integer"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "last_name": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
                 }
             }
         },

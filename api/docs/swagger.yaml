@@ -206,12 +206,29 @@ definitions:
     type: object
   users_service.AdminResponse:
     properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      message:
+        items:
+          $ref: '#/definitions/users_service.AdminResponseMessage'
+        type: array
+      user_id:
+        type: string
+    type: object
+  users_service.AdminResponseMessage:
+    properties:
+      created_at:
+        type: string
       file:
         type: string
       last_message:
         type: string
-      message_count:
-        type: integer
+      read:
+        type: string
+      updated_at:
+        type: string
     type: object
   users_service.CreateUser:
     properties:
@@ -257,14 +274,8 @@ definitions:
         items:
           $ref: '#/definitions/users_service.AdminResponse'
         type: array
-      count:
+      message_count:
         type: integer
-      first_name:
-        type: string
-      last_name:
-        type: string
-      user_id:
-        type: string
     type: object
   users_service.GetMessageUserResponse:
     properties:

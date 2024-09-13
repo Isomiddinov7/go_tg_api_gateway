@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/users_service"
 	initializers "go_tg_api_gateway/initializer"
@@ -34,7 +33,6 @@ func (h *Handler) Auth(c *gin.Context) {
 		c.Request.Context(),
 		&credentials,
 	)
-	fmt.Println(resp)
 	if err != nil {
 		h.handleResponse(c, http.BadRequest, gin.H{"error": "login or password is wrong"})
 		return
