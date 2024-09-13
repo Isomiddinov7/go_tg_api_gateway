@@ -298,3 +298,45 @@ func (h *Handler) GetMessageAdminID(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 
 }
+
+// GetSendMessageUserTelegram godoc
+// @ID get_message_telegram_id
+// @Router /send-message/{id} [POST]
+// @Summary POST Telegram Message
+// @Description POST Telegram Message
+// @Tags Telegram Message
+// @Accept multipart/form-data
+// @Produce json
+// @Param file formData file true "Upload file"
+// @Param telegram_id formData string true "Telegram Id"
+// @Param message formData string true "Message"
+// @Success 200 {object} http.Response{data=users_service.TelegramMessageResponse} "TelegramMessageResponseBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) SendMessageUser(c *gin.Context) {
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
+		return
+	}
+
+	imageURL, err := utils.UploadImage(file)
+	if err != nil {
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
+		return
+	}
+
+	var message users_service.TelegramMessageResponse
+
+	message.TelegramId = c.PostForm("telegram_id")
+	message.Message = c.PostForm("message")
+	message.File = imageURL
+	err = utils.SendMessageToTelegram(&message)
+	if err != nil {
+		h.handleResponse(c, http.NoContent, err.Error())
+		return
+	}
+	h.handleResponse(c, http.OK, &message)
+
+}

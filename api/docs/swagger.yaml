@@ -310,6 +310,15 @@ definitions:
       password:
         type: string
     type: object
+  users_service.TelegramMessageResponse:
+    properties:
+      file:
+        type: string
+      message:
+        type: string
+      telegram_id:
+        type: string
+    type: object
   users_service.UpdateMessageRequest:
     properties:
       id:
@@ -1583,6 +1592,61 @@ paths:
       summary: Get Sell
       tags:
       - Sell
+  /send-message/{id}:
+    post:
+      consumes:
+      - multipart/form-data
+      description: POST Telegram Message
+      operationId: get_message_telegram_id
+      parameters:
+      - description: Upload file
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Telegram Id
+        in: formData
+        name: telegram_id
+        required: true
+        type: string
+      - description: Message
+        in: formData
+        name: message
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: TelegramMessageResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.TelegramMessageResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: POST Telegram Message
+      tags:
+      - Telegram Message
   /transaction/:id:
     put:
       consumes:
