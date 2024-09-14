@@ -399,8 +399,8 @@ func (h *Handler) PayMessagePost(c *gin.Context) {
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) PayMessageGet(c *gin.Context) {
-	user_id := c.Param("id")
-	if !utils.IsValidUUID(user_id) {
+	user_transaction_id := c.Param("id")
+	if !utils.IsValidUUID(user_transaction_id) {
 		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
 		return
 	}
@@ -408,7 +408,7 @@ func (h *Handler) PayMessageGet(c *gin.Context) {
 	resp, err := h.services.Messages().PayMessageGet(
 		context.Background(),
 		&users_service.PaymsqUser{
-			UserId: user_id,
+			UserTransactionId: user_transaction_id,
 		},
 	)
 	if err != nil {
