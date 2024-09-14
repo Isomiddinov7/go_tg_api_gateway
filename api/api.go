@@ -72,6 +72,11 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.POST("/send-message", h.DeserializeUser(), h.PayMessagePost)
 	r.GET("/send-message/:id", h.PayMessageGet)
 
+	r.POST("/nft", h.CreateNFT)
+	r.GET("/nft/:id", h.DeserializeUser(), h.GetNFTByID)
+	r.GET("/nft", h.DeserializeUser(), h.GetNFTList)
+	r.PUT("/nft/:id", h.DeserializeUser(), h.UpdateNFT)
+
 	url := ginSwagger.URL("swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 }

@@ -18,6 +18,7 @@ type ServiceManagerI interface {
 	Auth() users_service.AuthServiceClient
 	History() coins_service.HistoryServiceClient
 	TelegramPremium() coins_service.TelegramPremiumServiceClient
+	NFT() coins_service.NFTServiceClient
 }
 
 type grpcClients struct {
@@ -29,6 +30,7 @@ type grpcClients struct {
 	auth                   users_service.AuthServiceClient
 	history                coins_service.HistoryServiceClient
 	telegram_premium       coins_service.TelegramPremiumServiceClient
+	nft                    coins_service.NFTServiceClient
 }
 
 func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
@@ -59,6 +61,7 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 		auth:                   users_service.NewAuthServiceClient(connUserService),
 		history:                coins_service.NewHistoryServiceClient(connCoinService),
 		telegram_premium:       coins_service.NewTelegramPremiumServiceClient(connCoinService),
+		nft:                    coins_service.NewNFTServiceClient(connCoinService),
 	}, nil
 }
 
@@ -92,4 +95,8 @@ func (g *grpcClients) History() coins_service.HistoryServiceClient {
 
 func (g *grpcClients) TelegramPremium() coins_service.TelegramPremiumServiceClient {
 	return g.telegram_premium
+}
+
+func (g *grpcClients) NFT() coins_service.NFTServiceClient {
+	return g.nft
 }
