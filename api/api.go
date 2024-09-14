@@ -51,7 +51,7 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	// r.GET("/admin/message/:id", h.GetUserMessage)
 	// r.GET("/admin/message/user/:id", h.GetMessageAdminID)
 
-	r.GET("/history/user", h.DeserializeUser(), h.HistoryUser)
+	r.GET("/history/user", h.HistoryUser)
 
 	r.POST("/user", h.CreateUser)
 	r.GET("/user/:id", h.GetUserByID)

@@ -3807,7 +3807,13 @@ const docTemplate = `{
                 "message": {
                     "type": "string"
                 },
+                "premium_transaction_id": {
+                    "type": "string"
+                },
                 "updated_at": {
+                    "type": "string"
+                },
+                "user_transaction_id": {
                     "type": "string"
                 }
             }
