@@ -2340,6 +2340,18 @@ const docTemplate = `{
                         "name": "message",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "user_transaction_id",
+                        "name": "user_transaction_id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "premium_transaction_id",
+                        "name": "premium_transaction_id",
+                        "in": "formData"
                     }
                 ],
                 "responses": {

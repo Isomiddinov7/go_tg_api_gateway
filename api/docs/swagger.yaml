@@ -1863,6 +1863,14 @@ paths:
         name: message
         required: true
         type: string
+      - description: user_transaction_id
+        in: formData
+        name: user_transaction_id
+        type: string
+      - description: premium_transaction_id
+        in: formData
+        name: premium_transaction_id
+        type: string
       produces:
       - application/json
       responses:
