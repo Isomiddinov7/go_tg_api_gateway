@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/users_service"
 	"go_tg_api_gateway/pkg/utils"
@@ -197,7 +196,6 @@ func (h *Handler) GetUserMessage(c *gin.Context) {
 			UserId: user_id,
 		},
 	)
-	fmt.Println(resp)
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
@@ -417,7 +415,6 @@ func (h *Handler) PayMessageGet(c *gin.Context) {
 			UserTransactionId: user_transaction_id,
 		},
 	)
-	fmt.Println(resp)
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
