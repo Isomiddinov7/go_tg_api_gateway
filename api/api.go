@@ -64,6 +64,7 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.POST("/premium/create", h.DeserializeUser(), h.CreatePremium)
 	r.GET("/premium/:id", h.GetPremiumById)
 	r.GET("/premium/transaction", h.GetList)
+	r.GET("/premium/transaction/:id", h.GetPremiumTransactionById)
 	r.GET("/premium", h.GetPremiumList)
 	r.PUT("/premium/:id", h.DeserializeUser(), h.UpdateTransactionStatus)
 	r.PUT("/transaction/:id", h.DeserializeUser(), h.TransactionUpdate)
