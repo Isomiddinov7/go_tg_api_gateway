@@ -1,6 +1,8 @@
 module go_tg_api_gateway
 
-go 1.20
+go 1.21
+
+toolchain go1.23.1
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.30.4

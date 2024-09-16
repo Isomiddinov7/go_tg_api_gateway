@@ -3823,6 +3823,9 @@ const docTemplate = `{
                 "first_name": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "month": {
                     "type": "string"
                 },
