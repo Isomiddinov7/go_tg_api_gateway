@@ -3957,6 +3957,9 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string"
                 },
+                "user_id": {
+                    "type": "string"
+                },
                 "user_name": {
                     "type": "string"
                 }
