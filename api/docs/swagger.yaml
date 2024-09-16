@@ -96,6 +96,8 @@ definitions:
         type: string
       phone_number:
         type: string
+      status:
+        type: string
       updated_at:
         type: string
       user_name:
@@ -116,6 +118,8 @@ definitions:
       payment_img:
         type: string
       phone_number:
+        type: string
+      status:
         type: string
       updated_at:
         type: string

@@ -3905,6 +3905,9 @@
                 "phone_number": {
                     "type": "string"
                 },
+                "status": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 },
@@ -3935,6 +3938,9 @@
                     "type": "string"
                 },
                 "phone_number": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 },
                 "updated_at": {
