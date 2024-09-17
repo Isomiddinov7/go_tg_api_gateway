@@ -352,6 +352,7 @@ func (h *Handler) GetMessageAdminID(c *gin.Context) {
 // @Param file formData file true "Upload file"
 // @Param user_id formData string true "User Id"
 // @Param message formData string true "Message"
+// @Param status formData string false "Status"
 // @Param user_transaction_id formData string fasle "user_transaction_id"
 // @Param premium_transaction_id formData string false "premium_transaction_id"
 // @Success 200 {object} http.Response{data=string} "TelegramMessageResponseBody"
@@ -376,6 +377,7 @@ func (h *Handler) PayMessagePost(c *gin.Context) {
 	message.Message = c.PostForm("message")
 	message.UserTransactionId = c.PostForm("user_transaction_id")
 	message.PremiumTransactionId = c.PostForm("premium_transaction_id")
+	message.Status = c.PostForm("status")
 	message.File = imageURL
 
 	_, err = h.services.Messages().PayMessagePost(

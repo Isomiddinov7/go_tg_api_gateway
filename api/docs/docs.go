@@ -2424,6 +2424,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "Status",
+                        "name": "status",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
                         "description": "user_transaction_id",
                         "name": "user_transaction_id",
                         "in": "formData"

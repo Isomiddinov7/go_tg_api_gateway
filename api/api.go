@@ -70,7 +70,7 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.PUT("/transaction/:id", h.DeserializeUser(), h.TransactionUpdate)
 	r.POST("/premium/transaction", h.PremiumTransaction)
 
-	r.POST("/send-message", h.DeserializeUser(), h.PayMessagePost)
+	r.POST("/send-message", h.PayMessagePost)
 	r.GET("/send-message/:id", h.PayMessageGet)
 
 	r.POST("/nft", h.CreateNFT)

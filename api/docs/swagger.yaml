@@ -1937,6 +1937,10 @@ paths:
         name: message
         required: true
         type: string
+      - description: Status
+        in: formData
+        name: status
+        type: string
       - description: user_transaction_id
         in: formData
         name: user_transaction_id
