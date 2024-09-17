@@ -2023,7 +2023,7 @@ paths:
       summary: POST Telegram Message
       tags:
       - Telegram Message
-  /transaction/:id:
+  /transaction/{id}:
     put:
       consumes:
       - application/json
@@ -2283,6 +2283,10 @@ paths:
         in: query
         name: limit
         type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:
@@ -2546,6 +2550,10 @@ paths:
         in: query
         name: limit
         type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:

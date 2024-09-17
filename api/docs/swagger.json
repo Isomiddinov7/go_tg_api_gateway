@@ -2563,7 +2563,7 @@
                 }
             }
         },
-        "/transaction/:id": {
+        "/transaction/{id}": {
             "put": {
                 "description": "TransactionUpdate",
                 "consumes": [
@@ -2861,6 +2861,12 @@
                         "type": "integer",
                         "description": "limit",
                         "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
                         "in": "query"
                     }
                 ],
@@ -3322,6 +3328,12 @@
                         "type": "integer",
                         "description": "limit",
                         "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
                         "in": "query"
                     }
                 ],

@@ -2574,7 +2574,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/transaction/:id": {
+        "/transaction/{id}": {
             "put": {
                 "description": "TransactionUpdate",
                 "consumes": [
@@ -2872,6 +2872,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "limit",
                         "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
                         "in": "query"
                     }
                 ],
@@ -3333,6 +3339,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "limit",
                         "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
                         "in": "query"
                     }
                 ],
