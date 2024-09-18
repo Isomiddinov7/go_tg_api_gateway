@@ -1357,6 +1357,13 @@ const docTemplate = `{
                         "name": "user_id",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Telegram ID",
+                        "name": "telegram_id",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1371,7 +1378,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/coins_service.Coin"
+                                            "$ref": "#/definitions/coins_service.NFT"
                                         }
                                     }
                                 }

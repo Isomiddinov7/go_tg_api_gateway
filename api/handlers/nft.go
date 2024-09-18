@@ -20,7 +20,8 @@ import (
 // @Param file formData file true "Upload file"
 // @Param comment formData string true "NFT Comment"
 // @Param user_id formData string true "User ID NFT"
-// @Success 200 {object} http.Response{data=coins_service.Coin} "GetCoinBody"
+// @Param telegram_id formData string true "Telegram ID"
+// @Success 200 {object} http.Response{data=coins_service.NFT} "GetCoinBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) CreateNFT(c *gin.Context) {
@@ -41,6 +42,7 @@ func (h *Handler) CreateNFT(c *gin.Context) {
 
 	nft.Comment = c.PostForm("comment")
 	nft.UserId = c.PostForm("user_id")
+	nft.TelegramId = c.PostForm("telegram_id")
 	nft.NftImg = imageURL
 
 	_, err = h.services.NFT().Create(

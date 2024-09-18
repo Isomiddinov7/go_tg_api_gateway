@@ -1338,6 +1338,11 @@ paths:
         name: user_id
         required: true
         type: string
+      - description: Telegram ID
+        in: formData
+        name: telegram_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1348,7 +1353,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/coins_service.Coin'
+                  $ref: '#/definitions/coins_service.NFT'
               type: object
         "400":
           description: Invalid Argument
