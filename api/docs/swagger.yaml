@@ -46,6 +46,36 @@ definitions:
       updated_at:
         type: string
     type: object
+  coins_service.CoinNFT:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      nft_address:
+        type: string
+      nft_img:
+        type: string
+      nft_name:
+        type: string
+      nft_price:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  coins_service.CoinNFTUpdate:
+    properties:
+      id:
+        type: string
+      nft_address:
+        type: string
+      nft_img:
+        type: string
+      nft_name:
+        type: string
+      nft_price:
+        type: string
+    type: object
   coins_service.CreateTelegramPremiumPrice:
     properties:
       month:
@@ -54,6 +84,15 @@ definitions:
         type: string
       price:
         type: string
+    type: object
+  coins_service.GetListCoinNFTResponse:
+    properties:
+      coin_nfts:
+        items:
+          $ref: '#/definitions/coins_service.CoinNFT'
+        type: array
+      count:
+        type: integer
     type: object
   coins_service.GetListCoinResponse:
     properties:
@@ -1083,6 +1122,258 @@ paths:
       summary: Update Coin
       tags:
       - Coin
+  /coin/nft:
+    get:
+      consumes:
+      - application/json
+      description: Get CoinNFT List
+      operationId: get_coin_nft_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetListCoinNFTResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.GetListCoinNFTResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get CoinNFT List
+      tags:
+      - CoinNFT
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create CoinNFT
+      operationId: create_coin_nft
+      parameters:
+      - description: Upload file
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: CoinNFT Name
+        in: formData
+        name: nft_name
+        required: true
+        type: string
+      - description: CoinNFT  Price
+        in: formData
+        name: coin_nft_price
+        required: true
+        type: string
+      - description: NFTAddress
+        in: formData
+        name: nft_address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetCoinNFTBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.CoinNFT'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create CoinNFT
+      tags:
+      - CoinNFT
+  /coin/nft/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete CoinNFT
+      operationId: delete_coin_nft
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: CoinNFT data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete CoinNFT
+      tags:
+      - CoinNFT
+    get:
+      consumes:
+      - application/json
+      description: Get CoinNFT  By ID
+      operationId: get_coin_nft_by_id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: CoinNFTBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.CoinNFT'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Coin  By ID
+      tags:
+      - CoinNFT
+    put:
+      consumes:
+      - application/json
+      description: Update CoinNFt
+      operationId: update_coin_nft
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UpdateCoinNFT
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/coins_service.CoinNFTUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: CoinNFT data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.CoinNFT'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update CoinNFT
+      tags:
+      - CoinNFT
   /history:
     get:
       consumes:

@@ -79,6 +79,12 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.PUT("/nft/:id", h.DeserializeUser(), h.UpdateNFT)
 	r.DELETE("/nft/:id", h.DeserializeUser(), h.DeleteNFT)
 
+	r.POST("/coin/nft", h.CoinNFTCreate)
+	r.GET("/coin/nft/:id", h.GetCoinNFTByID)
+	r.GET("/coin/nft", h.GetCoinNFTList)
+	r.PUT("/coin/nft/:id", h.UpdateCoinNFT)
+	r.DELETE("/coin/nft/:id", h.DeleteCoinNFT)
+
 	url := ginSwagger.URL("swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 }

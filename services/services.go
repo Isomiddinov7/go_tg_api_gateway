@@ -10,6 +10,7 @@ import (
 )
 
 type ServiceManagerI interface {
+	CoinNftService() coins_service.CoinNFTServiceClient
 	CoinService() coins_service.CoinsServiceClient
 	BuyOrSale() coins_service.BuyOrSellClient
 	UserService() users_service.UserServiceClient
@@ -31,6 +32,7 @@ type grpcClients struct {
 	history                coins_service.HistoryServiceClient
 	telegram_premium       coins_service.TelegramPremiumServiceClient
 	nft                    coins_service.NFTServiceClient
+	coinNftService         coins_service.CoinNFTServiceClient
 }
 
 func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
@@ -53,6 +55,7 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 	}
 
 	return &grpcClients{
+		coinNftService:         coins_service.NewCoinNFTServiceClient(connCoinService),
 		coinService:            coins_service.NewCoinsServiceClient(connCoinService),
 		buyorsaleService:       coins_service.NewBuyOrSellClient(connCoinService),
 		userService:            users_service.NewUserServiceClient(connUserService),
@@ -99,4 +102,7 @@ func (g *grpcClients) TelegramPremium() coins_service.TelegramPremiumServiceClie
 
 func (g *grpcClients) NFT() coins_service.NFTServiceClient {
 	return g.nft
+}
+func (g *grpcClients) CoinNftService() coins_service.CoinNFTServiceClient {
+	return g.coinNftService
 }
