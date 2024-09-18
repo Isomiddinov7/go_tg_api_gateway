@@ -171,3 +171,35 @@ func (h *Handler) UpdateNFT(c *gin.Context) {
 
 	h.handleResponse(c, http.OK, resp)
 }
+
+// DeleteNFT godoc
+// @ID delete_nft
+// @Router /nft/{id} [DELETE]
+// @Summary Delete NFT
+// @Description Delete NFT
+// @Tags NFT
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Success 200 {object} http.Response{data=object{}} "NFT data"
+// @Response 400 {object} http.Response{data=string} "Bad Request"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) DeleteNFT(c *gin.Context) {
+
+	NFTId := c.Param("id")
+	if !utils.IsValidUUID(NFTId) {
+		h.handleResponse(c, http.InvalidArgument, "NFT id is an invalid uuid")
+		return
+	}
+
+	_, err := h.services.NFT().Delete(
+		c.Request.Context(),
+		&coins_service.NFTPrimaryKey{Id: NFTId},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, "delete is success")
+}
