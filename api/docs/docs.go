@@ -3400,6 +3400,87 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/all-transfer/{id}": {
+            "get": {
+                "description": "Get User History Transaction User  By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Transfer"
+                ],
+                "summary": "Get User History Transaction User  By ID",
+                "operationId": "get_user_history_transaction_user_by_id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "HistoryUserTransactionBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/users_service.HistoryUserTransaction"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/user/buy": {
             "get": {
                 "security": [
@@ -3636,7 +3717,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "CoinBody",
+                        "description": "UserTransactionBuyBody",
                         "schema": {
                             "allOf": [
                                 {
@@ -4955,6 +5036,35 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/users_service.Message"
                     }
+                }
+            }
+        },
+        "users_service.HistoryUserTransaction": {
+            "type": "object",
+            "properties": {
+                "buy": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/users_service.UserTransactionBuy"
+                    }
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "sell": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/users_service.UserTransactionSell"
+                    }
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/users_service"
 	"go_tg_api_gateway/pkg/utils"
@@ -289,7 +288,7 @@ func (h *Handler) GetByIdTransactionSell(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "id"
-// @Success 200 {object} http.Response{data=users_service.UserTransactionBuy} "CoinBody"
+// @Success 200 {object} http.Response{data=users_service.UserTransactionBuy} "UserTransactionBuyBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetByIdTransactionBuy(c *gin.Context) {
@@ -310,6 +309,38 @@ func (h *Handler) GetByIdTransactionBuy(c *gin.Context) {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
-	fmt.Println(resp)
+	h.handleResponse(c, http.OK, resp)
+}
+
+// GetHistoryTransactionUser godoc
+// @ID get_user_history_transaction_user_by_id
+// @Router /user/all-transfer/{id} [GET]
+// @Summary Get User History Transaction User  By ID
+// @Description Get User History Transaction User  By ID
+// @Tags User Transfer
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Success 200 {object} http.Response{data=users_service.HistoryUserTransaction} "HistoryUserTransactionBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetHistoryTransactionUser(c *gin.Context) {
+
+	Id := c.Param("id")
+	if !utils.IsValidUUID(Id) {
+		h.handleResponse(c, http.InvalidArgument, "User Buy id is an invalid uuid")
+		return
+	}
+
+	resp, err := h.services.UserTransaction().GetHistoryTransactionUser(
+		context.Background(),
+		&users_service.HistoryUserTransactionPrimaryKey{
+			UserId: Id,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
 	h.handleResponse(c, http.OK, resp)
 }

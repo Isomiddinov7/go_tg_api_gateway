@@ -70,6 +70,8 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.PUT("/transaction/:id", h.DeserializeUser(), h.TransactionUpdate)
 	r.POST("/premium/transaction", h.PremiumTransaction)
 
+	r.GET("/user/all-transfer/:id", h.DeserializeUser(), h.GetHistoryTransactionUser)
+
 	r.POST("/send-message", h.PayMessagePost)
 	r.GET("/send-message/:id", h.PayMessageGet)
 
@@ -79,11 +81,11 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.PUT("/nft/:id", h.DeserializeUser(), h.UpdateNFT)
 	r.DELETE("/nft/:id", h.DeserializeUser(), h.DeleteNFT)
 
-	r.POST("/coin/nft", h.CoinNFTCreate)
+	r.POST("/coin/nft",h.DeserializeUser(), h.CoinNFTCreate)
 	r.GET("/coin/nft/:id", h.GetCoinNFTByID)
 	r.GET("/coin/nft", h.GetCoinNFTList)
-	r.PUT("/coin/nft/:id", h.UpdateCoinNFT)
-	r.DELETE("/coin/nft/:id", h.DeleteCoinNFT)
+	r.PUT("/coin/nft/:id",h.DeserializeUser(), h.UpdateCoinNFT)
+	r.DELETE("/coin/nft/:id",h.DeserializeUser(), h.DeleteCoinNFT)
 
 	url := ginSwagger.URL("swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
