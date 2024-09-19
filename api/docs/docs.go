@@ -1809,6 +1809,27 @@ const docTemplate = `{
                         "name": "telegram_id",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Coin NFT ID",
+                        "name": "coin_nft_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card number",
+                        "name": "card_number",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card number Name",
+                        "name": "card_number_name",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -4651,13 +4672,28 @@ const docTemplate = `{
         "coins_service.NFT": {
             "type": "object",
             "properties": {
+                "card_namber": {
+                    "type": "string"
+                },
+                "card_number_name": {
+                    "type": "string"
+                },
                 "comment": {
                     "type": "string"
                 },
                 "created_at": {
                     "type": "string"
                 },
+                "first_name": {
+                    "type": "string"
+                },
                 "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "nft_coin_img": {
                     "type": "string"
                 },
                 "nft_img": {
@@ -4673,6 +4709,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user_id": {
+                    "type": "string"
+                },
+                "user_name": {
                     "type": "string"
                 }
             }

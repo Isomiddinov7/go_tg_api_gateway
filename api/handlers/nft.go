@@ -21,6 +21,9 @@ import (
 // @Param comment formData string true "NFT Comment"
 // @Param user_id formData string true "User ID NFT"
 // @Param telegram_id formData string true "Telegram ID"
+// @Param coin_nft_id formData string true "Coin NFT ID"
+// @Param card_number formData string true "Card number"
+// @Param card_number_name formData string true "Card number Name"
 // @Success 200 {object} http.Response{data=coins_service.NFT} "GetCoinBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
@@ -43,6 +46,9 @@ func (h *Handler) CreateNFT(c *gin.Context) {
 	nft.Comment = c.PostForm("comment")
 	nft.UserId = c.PostForm("user_id")
 	nft.TelegramId = c.PostForm("telegram_id")
+	nft.CoinNftId = c.PostForm("coin_nft_id")
+	nft.CardNumber = c.PostForm("card_number")
+	nft.CardNumberName = c.PostForm("card_number_name")
 	nft.NftImg = imageURL
 
 	_, err = h.services.NFT().Create(

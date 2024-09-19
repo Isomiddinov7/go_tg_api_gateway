@@ -217,11 +217,21 @@ definitions:
     type: object
   coins_service.NFT:
     properties:
+      card_namber:
+        type: string
+      card_number_name:
+        type: string
       comment:
         type: string
       created_at:
         type: string
+      first_name:
+        type: string
       id:
+        type: string
+      last_name:
+        type: string
+      nft_coin_img:
         type: string
       nft_img:
         type: string
@@ -232,6 +242,8 @@ definitions:
       updated_at:
         type: string
       user_id:
+        type: string
+      user_name:
         type: string
     type: object
   coins_service.TelegramPremium:
@@ -1632,6 +1644,21 @@ paths:
       - description: Telegram ID
         in: formData
         name: telegram_id
+        required: true
+        type: string
+      - description: Coin NFT ID
+        in: formData
+        name: coin_nft_id
+        required: true
+        type: string
+      - description: Card number
+        in: formData
+        name: card_number
+        required: true
+        type: string
+      - description: Card number Name
+        in: formData
+        name: card_number_name
         required: true
         type: string
       produces:
