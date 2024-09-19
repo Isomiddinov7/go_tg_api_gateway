@@ -34,8 +34,8 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.POST("/user/sell", h.UserSell)
 	r.POST("/user/buy", h.UserBuy)
 	r.GET("/user/sell", h.AllUserSell)
-	r.GET("/user/buy/:id", h.DeserializeUser(), h.GetByIdTransactionBuy)
-	r.GET("/user/sell/:id", h.DeserializeUser(), h.GetByIdTransactionSell)
+	r.GET("/user/buy/:id", h.GetByIdTransactionBuy)
+	r.GET("/user/sell/:id", h.GetByIdTransactionSell)
 	r.GET("/user/buy", h.AllUserBuy)
 
 	r.POST("/admin/message", h.DeserializeUser(), h.CreateAdminMessage)
