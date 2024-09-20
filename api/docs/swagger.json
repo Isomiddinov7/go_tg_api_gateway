@@ -5323,9 +5323,6 @@
                 "status": {
                     "type": "string"
                 },
-                "success_img": {
-                    "type": "string"
-                },
                 "telegram_id": {
                     "type": "string"
                 },
@@ -5389,9 +5386,6 @@
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
-                },
-                "success": {
                     "type": "string"
                 },
                 "telegram_id": {

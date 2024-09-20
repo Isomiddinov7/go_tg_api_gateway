@@ -5334,9 +5334,6 @@ const docTemplate = `{
                 "status": {
                     "type": "string"
                 },
-                "success_img": {
-                    "type": "string"
-                },
                 "telegram_id": {
                     "type": "string"
                 },
@@ -5400,9 +5397,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
-                },
-                "success": {
                     "type": "string"
                 },
                 "telegram_id": {

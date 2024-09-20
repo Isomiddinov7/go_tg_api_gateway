@@ -596,8 +596,6 @@ definitions:
         type: string
       status:
         type: string
-      success_img:
-        type: string
       telegram_id:
         type: string
       transaction_status:
@@ -640,8 +638,6 @@ definitions:
       message:
         type: string
       status:
-        type: string
-      success:
         type: string
       telegram_id:
         type: string
