@@ -3132,6 +3132,87 @@ const docTemplate = `{
                 }
             }
         },
+        "/success-img/{id}": {
+            "get": {
+                "description": "Get Transaction Success Img By Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Transfer Success Img"
+                ],
+                "summary": "Get Transaction Success Img By Id",
+                "operationId": "get_transaction_success_img",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetTransactionSuccessImgResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/users_service.GetTransactionSuccessImgResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/transaction/{id}": {
             "put": {
                 "description": "TransactionUpdate",
@@ -5036,6 +5117,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/users_service.Message"
                     }
+                }
+            }
+        },
+        "users_service.GetTransactionSuccessImgResponse": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "success_img": {
+                    "type": "string"
                 }
             }
         },

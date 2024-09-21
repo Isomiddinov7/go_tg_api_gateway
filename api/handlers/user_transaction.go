@@ -344,3 +344,36 @@ func (h *Handler) GetHistoryTransactionUser(c *gin.Context) {
 	}
 	h.handleResponse(c, http.OK, resp)
 }
+
+// GetTransactionSuccessImg godoc
+// @ID get_transaction_success_img
+// @Router /success-img/{id} [GET]
+// @Summary Get Transaction Success Img By Id
+// @Description Get Transaction Success Img By Id
+// @Tags User Transfer Success Img
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Success 200 {object} http.Response{data=users_service.GetTransactionSuccessImgResponse} "GetTransactionSuccessImgResponseBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetTransactionSuccessImg(c *gin.Context) {
+
+	Id := c.Param("id")
+	if !utils.IsValidUUID(Id) {
+		h.handleResponse(c, http.InvalidArgument, "Transaction success id is an invalid uuid")
+		return
+	}
+
+	resp, err := h.services.UserTransaction().GetTransactionSuccessImg(
+		context.Background(),
+		&users_service.GetTransactionSuccessImgRequest{
+			UserTransactionId: Id,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+	h.handleResponse(c, http.OK, resp)
+}

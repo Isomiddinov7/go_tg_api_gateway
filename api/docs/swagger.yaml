@@ -403,6 +403,13 @@ definitions:
           $ref: '#/definitions/users_service.Message'
         type: array
     type: object
+  users_service.GetTransactionSuccessImgResponse:
+    properties:
+      comment:
+        type: string
+      success_img:
+        type: string
+    type: object
   users_service.HistoryUserTransaction:
     properties:
       buy:
@@ -2415,6 +2422,51 @@ paths:
       summary: POST Telegram Message
       tags:
       - Telegram Message
+  /success-img/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Transaction Success Img By Id
+      operationId: get_transaction_success_img
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetTransactionSuccessImgResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users_service.GetTransactionSuccessImgResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Transaction Success Img By Id
+      tags:
+      - User Transfer Success Img
   /transaction/{id}:
     put:
       consumes:
