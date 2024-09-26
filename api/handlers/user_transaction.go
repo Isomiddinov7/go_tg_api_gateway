@@ -203,7 +203,7 @@ func (h *Handler) AllUserBuy(c *gin.Context) {
 }
 
 // TransactionUpdate godoc
-// @ID update_user
+// @ID transaction_update
 // @Router /transaction/{id} [PUT]
 // @Summary TransactionUpdate
 // @Description TransactionUpdate

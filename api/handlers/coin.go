@@ -41,7 +41,7 @@ func (h *Handler) CreateCoin(c *gin.Context) {
 	if err != nil {
 		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 		return
-	}		
+	}
 
 	var coin coins_service.CreateCoin
 
@@ -153,35 +153,60 @@ func (h *Handler) GetCoinList(c *gin.Context) {
 
 // UpdateCoin godoc
 // @ID update_coin
-// @Router /coin/{id} [PUT]
+// @Router /coin/update [PUT]
 // @Summary Update Coin
 // @Description Update Coin
 // @Tags Coin
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
-// @Param id path string true "id"
+// @Param id formData string true "id"
+// @Param file formData file true "Upload file"
+// @Param name formData string true "Coin Name"
+// @Param coin_buy_price formData string true "Coin Buy Price"
+// @Param coin_sell_price formData string true "Coin Sell Price"
+// @Param address formData string true "Address"
+// @Param card_number formData string true "Card Number"
+// @Param status formData string true "Status"
 // @Param profile body coins_service.UpdateCoin true "UpdateCoin"
+// @Param halfcoins formData array false "coins_service.CreateCoin.HalfCoinPrice" items.schema.type=object items.schema.$ref="#/definitions/HalfCoinPrice"
 // @Success 200 {object} http.Response{data=coins_service.Coin} "Coin data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) UpdateCoin(c *gin.Context) {
 
-	var Coin coins_service.UpdateCoin
-	Coin.Id = c.Param("id")
-	if !utils.IsValidUUID(Coin.Id) {
-		h.handleResponse(c, http.InvalidArgument, "Coin id is an invalid uuid")
+	file, err := c.FormFile("file")
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
 		return
 	}
 
-	err := c.ShouldBindJSON(&Coin)
+	imageURL, err := utils.UploadImage(file)
 	if err != nil {
-		h.handleResponse(c, http.BadRequest, err.Error())
+		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
 		return
 	}
+
+	var coin coins_service.UpdateCoin
+	coin.Id = c.PostForm("id")
+	coin.Name = c.PostForm("name")
+	coin.CoinBuyPrice = c.PostForm("coin_buy_price")
+	coin.CoinSellPrice = c.PostForm("coin_sell_price")
+	coin.Address = c.PostForm("address")
+	coin.CardNumber = c.PostForm("card_number")
+	coin.Status = c.PostForm("status")
+	coin.CoinIcon = imageURL
+	halfcoinsJSON := c.PostForm("halfcoins")
+	var halfcoins []*coins_service.HalfCoinPrice
+	if err := json.Unmarshal([]byte(halfcoinsJSON), &halfcoins); err != nil {
+		h.handleResponse(c, http.BadRequest, gin.H{"error": "Invalid halfcoins data"})
+		return
+	}
+
+	coin.Halfcoins = halfcoins
 
 	resp, err := h.services.CoinService().Update(
 		c.Request.Context(),
-		&Coin,
+		&coin,
 	)
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())

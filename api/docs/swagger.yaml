@@ -1110,56 +1110,6 @@ paths:
       summary: Get Coin  By ID
       tags:
       - Coin
-    put:
-      consumes:
-      - application/json
-      description: Update Coin
-      operationId: update_coin
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: UpdateCoin
-        in: body
-        name: profile
-        required: true
-        schema:
-          $ref: '#/definitions/coins_service.UpdateCoin'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Coin data
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/coins_service.Coin'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Update Coin
-      tags:
-      - Coin
   /coin/nft:
     get:
       consumes:
@@ -1412,6 +1362,96 @@ paths:
       summary: Update CoinNFT
       tags:
       - CoinNFT
+  /coin/update:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update Coin
+      operationId: update_coin
+      parameters:
+      - description: id
+        in: formData
+        name: id
+        required: true
+        type: string
+      - description: Upload file
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Coin Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Coin Buy Price
+        in: formData
+        name: coin_buy_price
+        required: true
+        type: string
+      - description: Coin Sell Price
+        in: formData
+        name: coin_sell_price
+        required: true
+        type: string
+      - description: Address
+        in: formData
+        name: address
+        required: true
+        type: string
+      - description: Card Number
+        in: formData
+        name: card_number
+        required: true
+        type: string
+      - description: Status
+        in: formData
+        name: status
+        required: true
+        type: string
+      - description: UpdateCoin
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/coins_service.UpdateCoin'
+      - description: coins_service.CreateCoin.HalfCoinPrice
+        in: formData
+        name: halfcoins
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Coin data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.Coin'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Coin
+      tags:
+      - Coin
   /history:
     get:
       consumes:
@@ -2472,7 +2512,7 @@ paths:
       consumes:
       - application/json
       description: TransactionUpdate
-      operationId: update_user
+      operationId: transaction_update
       parameters:
       - description: id
         in: path
