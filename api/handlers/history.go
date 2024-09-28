@@ -68,3 +68,27 @@ func (h *Handler) HistoryUserAll(c *gin.Context) {
 
 	h.handleResponse(c, http.OK, resp)
 }
+
+// DeleteHistory godoc
+// @ID delete_history
+// @Router /history/delete [DELETE]
+// @Summary Delete History
+// @Description Delete History
+// @Tags History
+// @Accept json
+// @Produce json
+// @Success 200 {object} http.Response{data=object{}} "History data"
+// @Response 400 {object} http.Response{data=string} "Bad Request"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) HistoryDelete(c *gin.Context) {
+	_, err := h.services.History().HistoryDelete(
+		c.Request.Context(),
+		&coins_service.Empty{},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, "delete is success")
+}

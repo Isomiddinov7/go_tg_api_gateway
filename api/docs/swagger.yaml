@@ -1492,6 +1492,45 @@ paths:
       summary: Get History Users List
       tags:
       - History
+  /history/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete History
+      operationId: delete_history
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: History data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete History
+      tags:
+      - History
   /history/user:
     get:
       consumes:

@@ -5,6 +5,7 @@ import "coin.proto";
 service HistoryService{
     rpc HistoryUser(HistoryUserRequest) returns(HistoryUserResponse){}
     rpc HistoryUserAll(Empty) returns(HistoryUserResponse){}
+    rpc HistoryDelete(Empty) returns(Empty){}
 }
 
 message HistoryUserRequest{
