@@ -189,9 +189,13 @@ definitions:
         type: string
       all_price:
         type: string
+      card_name:
+        type: string
       card_number:
         type: string
       coin_amount:
+        type: string
+      coin_id:
         type: string
       coin_price:
         type: string
@@ -205,6 +209,21 @@ definitions:
         type: string
       status:
         type: string
+      transaction_status:
+        type: string
+      user_id:
+        type: string
+    type: object
+  coins_service.HistoryMessageResponse:
+    properties:
+      history_status:
+        items:
+          $ref: '#/definitions/coins_service.TransactionStatus'
+        type: array
+      history_user:
+        items:
+          $ref: '#/definitions/coins_service.HistoriesUser'
+        type: array
     type: object
   coins_service.HistoryUserResponse:
     properties:
@@ -272,6 +291,15 @@ definitions:
       month:
         type: string
       price:
+        type: string
+    type: object
+  coins_service.TransactionStatus:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+      text:
         type: string
     type: object
   coins_service.UpdateCoin:
@@ -1492,26 +1520,31 @@ paths:
       summary: Get History Users List
       tags:
       - History
-  /history/delete:
-    delete:
+  /history/message:
+    get:
       consumes:
       - application/json
-      description: Delete History
-      operationId: delete_history
+      description: Get HistoryMessage Users List
+      parameters:
+      - description: id
+        in: query
+        name: user_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: History data
+          description: HistoryMessageResponseBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  type: object
+                  $ref: '#/definitions/coins_service.HistoryMessageResponse'
               type: object
         "400":
-          description: Bad Request
+          description: Invalid Argument
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -1528,9 +1561,56 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Delete History
+      security:
+      - ApiKeyAuth: []
+      summary: Get HistoryMessage Users List
       tags:
-      - History
+      - HistoryMessage
+    put:
+      consumes:
+      - application/json
+      description: HistoryMessage Users
+      parameters:
+      - description: id
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: HistoryMessageResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateHistoryRead Users
+      tags:
+      - UpdateHistoryRead
   /history/user:
     get:
       consumes:

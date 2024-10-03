@@ -1476,9 +1476,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/history/delete": {
-            "delete": {
-                "description": "Delete History",
+        "/history/message": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get HistoryMessage Users List",
                 "consumes": [
                     "application/json"
                 ],
@@ -1486,13 +1491,21 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "History"
+                    "HistoryMessage"
                 ],
-                "summary": "Delete History",
-                "operationId": "delete_history",
+                "summary": "Get HistoryMessage Users List",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "History data",
+                        "description": "HistoryMessageResponseBody",
                         "schema": {
                             "allOf": [
                                 {
@@ -1502,7 +1515,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "object"
+                                            "$ref": "#/definitions/coins_service.HistoryMessageResponse"
                                         }
                                     }
                                 }
@@ -1510,7 +1523,90 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "HistoryMessage Users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UpdateHistoryRead"
+                ],
+                "summary": "UpdateHistoryRead Users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "HistoryMessageResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
                         "schema": {
                             "allOf": [
                                 {
@@ -4920,10 +5016,16 @@ const docTemplate = `{
                 "all_price": {
                     "type": "string"
                 },
+                "card_name": {
+                    "type": "string"
+                },
                 "card_number": {
                     "type": "string"
                 },
                 "coin_amount": {
+                    "type": "string"
+                },
+                "coin_id": {
                     "type": "string"
                 },
                 "coin_price": {
@@ -4943,6 +5045,29 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                },
+                "transaction_status": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "coins_service.HistoryMessageResponse": {
+            "type": "object",
+            "properties": {
+                "history_status": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/coins_service.TransactionStatus"
+                    }
+                },
+                "history_user": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/coins_service.HistoriesUser"
+                    }
                 }
             }
         },
@@ -5046,6 +5171,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "price": {
+                    "type": "string"
+                }
+            }
+        },
+        "coins_service.TransactionStatus": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "text": {
                     "type": "string"
                 }
             }

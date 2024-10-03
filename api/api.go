@@ -52,7 +52,6 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	// r.GET("/admin/message/user/:id", h.GetMessageAdminID)
 
 	r.GET("/history/user", h.HistoryUser)
-	r.DELETE("/history/delete", h.DeserializeUser(), h.HistoryDelete)
 
 	r.POST("/user", h.CreateUser)
 	r.GET("/user/:id", h.GetUserByID)
@@ -89,6 +88,9 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 	r.DELETE("/coin/nft/:id", h.DeserializeUser(), h.DeleteCoinNFT)
 
 	r.GET("/success-img/:id", h.GetTransactionSuccessImg)
+
+	r.GET("/history/message", h.HistoryMessage)
+	r.PUT("/history/message", h.UpdateHistoryRead)
 
 	url := ginSwagger.URL("swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
