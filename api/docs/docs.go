@@ -3182,8 +3182,7 @@ const docTemplate = `{
                         "type": "file",
                         "description": "Upload file",
                         "name": "file",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     },
                     {
                         "type": "string",
@@ -5057,16 +5056,10 @@ const docTemplate = `{
         "coins_service.HistoryMessageResponse": {
             "type": "object",
             "properties": {
-                "history_status": {
+                "history_with_status": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/coins_service.TransactionStatus"
-                    }
-                },
-                "history_user": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/coins_service.HistoriesUser"
+                        "$ref": "#/definitions/coins_service.HistoryUserWithStatus"
                     }
                 }
             }
@@ -5082,6 +5075,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/coins_service.HistoriesUser"
                     }
+                }
+            }
+        },
+        "coins_service.HistoryUserWithStatus": {
+            "type": "object",
+            "properties": {
+                "history_status": {
+                    "$ref": "#/definitions/coins_service.TransactionStatus"
+                },
+                "history_user": {
+                    "$ref": "#/definitions/coins_service.HistoriesUser"
                 }
             }
         },
@@ -5532,6 +5536,9 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                },
+                "warning_count": {
+                    "type": "string"
                 }
             }
         },
@@ -5558,6 +5565,9 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                },
+                "user_status": {
+                    "$ref": "#/definitions/users_service.UserStatus"
                 },
                 "username": {
                     "type": "string"
@@ -5651,6 +5661,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "users_service.UserStatus": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "warning_count": {
                     "type": "string"
                 }
             }

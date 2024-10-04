@@ -349,7 +349,7 @@ func (h *Handler) GetMessageAdminID(c *gin.Context) {
 // @Tags Telegram Message
 // @Accept multipart/form-data
 // @Produce json
-// @Param file formData file true "Upload file"
+// @Param file formData file false "Upload file"
 // @Param user_id formData string true "User Id"
 // @Param message formData string true "Message"
 // @Param status formData string false "Status"
@@ -360,15 +360,16 @@ func (h *Handler) GetMessageAdminID(c *gin.Context) {
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) PayMessagePost(c *gin.Context) {
 	file, err := c.FormFile("file")
-	if err != nil {
-		h.handleResponse(c, http.BadRequest, gin.H{"error": "Unable to get file"})
-		return
-	}
+	var imageURL string
 
-	imageURL, err := utils.UploadImage(file)
-	if err != nil {
-		h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
-		return
+	if err == nil {
+		imageURL, err = utils.UploadImage(file)
+		if err != nil {
+			h.handleResponse(c, http.InternalServerError, gin.H{"error": "Failed to upload image"})
+			return
+		}
+	} else {
+		imageURL = ""
 	}
 
 	var message users_service.PaymsqRequest

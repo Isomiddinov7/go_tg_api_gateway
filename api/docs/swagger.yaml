@@ -216,13 +216,9 @@ definitions:
     type: object
   coins_service.HistoryMessageResponse:
     properties:
-      history_status:
+      history_with_status:
         items:
-          $ref: '#/definitions/coins_service.TransactionStatus'
-        type: array
-      history_user:
-        items:
-          $ref: '#/definitions/coins_service.HistoriesUser'
+          $ref: '#/definitions/coins_service.HistoryUserWithStatus'
         type: array
     type: object
   coins_service.HistoryUserResponse:
@@ -233,6 +229,13 @@ definitions:
         items:
           $ref: '#/definitions/coins_service.HistoriesUser'
         type: array
+    type: object
+  coins_service.HistoryUserWithStatus:
+    properties:
+      history_status:
+        $ref: '#/definitions/coins_service.TransactionStatus'
+      history_user:
+        $ref: '#/definitions/coins_service.HistoriesUser'
     type: object
   coins_service.NFT:
     properties:
@@ -525,6 +528,8 @@ definitions:
         type: string
       status:
         type: string
+      warning_count:
+        type: string
     type: object
   users_service.User:
     properties:
@@ -542,6 +547,8 @@ definitions:
         type: string
       updated_at:
         type: string
+      user_status:
+        $ref: '#/definitions/users_service.UserStatus'
       username:
         type: string
     type: object
@@ -603,6 +610,13 @@ definitions:
       transaction_status:
         type: string
       user_id:
+        type: string
+    type: object
+  users_service.UserStatus:
+    properties:
+      status:
+        type: string
+      warning_count:
         type: string
     type: object
   users_service.UserTransactionBuy:
@@ -2479,7 +2493,6 @@ paths:
       - description: Upload file
         in: formData
         name: file
-        required: true
         type: file
       - description: User Id
         in: formData
