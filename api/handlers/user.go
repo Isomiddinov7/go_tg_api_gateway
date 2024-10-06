@@ -4,7 +4,6 @@ import (
 	"context"
 	"go_tg_api_gateway/api/http"
 	"go_tg_api_gateway/genproto/users_service"
-	"go_tg_api_gateway/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -120,29 +119,21 @@ func (h *Handler) GetUserList(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// UpdateUser godoc
-// @ID update_user
-// @Router /user/{id} [PUT]
-// @Summary Update User
-// @Description Update User
+// @Security ApiKeyAuth
+// UpdateUserStatus godoc
+// @ID update_user_status
+// @Router /user [PUT]
+// @Summary Update User Status
+// @Description  Update User Status
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param id path string true "id"
-// @Param profile body users_service.UpdateUser true "UpdateUser"
-// @Success 200 {object} http.Response{data=users_service.User} "User data"
-// @Response 400 {object} http.Response{data=string} "Bad Request"
+// @Param profile body users_service.UpdateUserStatus true "UpdateUserStatusBody"
+// @Success 200 {object} http.Response{data=string} "Update User Status Body"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) UpdateUser(c *gin.Context) {
-
-	var user users_service.UpdateUser
-
-	user.Id = c.Param("id")
-
-	if !utils.IsValidUUID(user.Id) {
-		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
-		return
-	}
+func (h *Handler) Update(c *gin.Context) {
+	var user users_service.UpdateUserStatus
 
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
@@ -160,5 +151,5 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	h.handleResponse(c, http.OK, "1")
+	h.handleResponse(c, http.OK, "ok")
 }

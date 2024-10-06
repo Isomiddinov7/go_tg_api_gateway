@@ -55,8 +55,8 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 
 	r.POST("/user", h.CreateUser)
 	r.GET("/user/:id", h.GetUserByID)
+	r.PUT("/user", h.Update)
 	r.GET("/user", h.DeserializeUser(), h.GetUserList)
-	r.PUT("/user/:id", h.DeserializeUser(), h.UpdateUser)
 	r.POST("/user/message", h.CreateUserMessage)
 	r.GET("/user/message/:id", h.GetUserMessage)
 
@@ -72,7 +72,7 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 
 	r.GET("/user/all-transfer/:id", h.DeserializeUser(), h.GetHistoryTransactionUser)
 
-	r.POST("/send-message", h.PayMessagePost)
+	r.POST("/send-message", h.DeserializeUser(), h.PayMessagePost)
 	r.GET("/send-message/:id", h.PayMessageGet)
 
 	r.POST("/nft", h.CreateNFT)

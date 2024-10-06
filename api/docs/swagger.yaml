@@ -522,13 +522,11 @@ definitions:
       transaction_status:
         type: string
     type: object
-  users_service.UpdateUser:
+  users_service.UpdateUserStatus:
     properties:
-      id:
-        type: string
       status:
         type: string
-      warning_count:
+      telegram_id:
         type: string
     type: object
   users_service.User:
@@ -2789,6 +2787,53 @@ paths:
       summary: Create User
       tags:
       - User
+    put:
+      consumes:
+      - application/json
+      description: Update User Status
+      operationId: update_user_status
+      parameters:
+      - description: UpdateUserStatusBody
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/users_service.UpdateUserStatus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update User Status Body
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update User Status
+      tags:
+      - User
   /user/{id}:
     get:
       consumes:
@@ -2832,56 +2877,6 @@ paths:
                   type: string
               type: object
       summary: Get User  By ID
-      tags:
-      - User
-    put:
-      consumes:
-      - application/json
-      description: Update User
-      operationId: update_user
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: UpdateUser
-        in: body
-        name: profile
-        required: true
-        schema:
-          $ref: '#/definitions/users_service.UpdateUser'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User data
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/users_service.User'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Update User
       tags:
       - User
   /user/all-transfer/{id}:
