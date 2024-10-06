@@ -71,7 +71,7 @@ func (h *Handler) HistoryUserAll(c *gin.Context) {
 
 // @Security ApiKeyAuth
 // HistoryMessage godoc
-// @Router /history/message [GET]
+// @Router /history/message/{id} [GET]
 // @Summary Get HistoryMessage Users List
 // @Description  Get HistoryMessage Users List
 // @Tags HistoryMessage

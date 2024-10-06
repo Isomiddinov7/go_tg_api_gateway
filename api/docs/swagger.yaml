@@ -1533,51 +1533,6 @@ paths:
       tags:
       - History
   /history/message:
-    get:
-      consumes:
-      - application/json
-      description: Get HistoryMessage Users List
-      parameters:
-      - description: id
-        in: query
-        name: user_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: HistoryMessageResponseBody
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/coins_service.HistoryMessageResponse'
-              type: object
-        "400":
-          description: Invalid Argument
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Get HistoryMessage Users List
-      tags:
-      - HistoryMessage
     put:
       consumes:
       - application/json
@@ -1623,6 +1578,52 @@ paths:
       summary: UpdateHistoryRead Users
       tags:
       - UpdateHistoryRead
+  /history/message/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get HistoryMessage Users List
+      parameters:
+      - description: id
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: HistoryMessageResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.HistoryMessageResponse'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get HistoryMessage Users List
+      tags:
+      - HistoryMessage
   /history/user:
     get:
       consumes:

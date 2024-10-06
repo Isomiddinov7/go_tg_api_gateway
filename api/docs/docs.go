@@ -1477,13 +1477,13 @@ const docTemplate = `{
             }
         },
         "/history/message": {
-            "get": {
+            "put": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Get HistoryMessage Users List",
+                "description": "HistoryMessage Users",
                 "consumes": [
                     "application/json"
                 ],
@@ -1491,9 +1491,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "HistoryMessage"
+                    "UpdateHistoryRead"
                 ],
-                "summary": "Get HistoryMessage Users List",
+                "summary": "UpdateHistoryRead Users",
                 "parameters": [
                     {
                         "type": "string",
@@ -1515,7 +1515,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/coins_service.HistoryMessageResponse"
+                                            "type": "string"
                                         }
                                     }
                                 }
@@ -1559,14 +1559,16 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "put": {
+            }
+        },
+        "/history/message/{id}": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "HistoryMessage Users",
+                "description": "Get HistoryMessage Users List",
                 "consumes": [
                     "application/json"
                 ],
@@ -1574,9 +1576,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "UpdateHistoryRead"
+                    "HistoryMessage"
                 ],
-                "summary": "UpdateHistoryRead Users",
+                "summary": "Get HistoryMessage Users List",
                 "parameters": [
                     {
                         "type": "string",
@@ -1598,7 +1600,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "string"
+                                            "$ref": "#/definitions/coins_service.HistoryMessageResponse"
                                         }
                                     }
                                 }

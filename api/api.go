@@ -89,7 +89,7 @@ func SetUpAPI(r *gin.Engine, h handlers.Handler, cfg config.Config) {
 
 	r.GET("/success-img/:id", h.GetTransactionSuccessImg)
 
-	r.GET("/history/message", h.HistoryMessage)
+	r.GET("/history/message/:id", h.HistoryMessage)
 	r.PUT("/history/message", h.UpdateHistoryRead)
 
 	url := ginSwagger.URL("swagger/doc.json")
