@@ -83,7 +83,7 @@ func (h *Handler) HistoryUserAll(c *gin.Context) {
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) HistoryMessage(c *gin.Context) {
 
-	UserID := c.Query("user_id")
+	UserID := c.Param("user_id")
 	if !utils.IsValidUUID(UserID) {
 		h.handleResponse(c, http.InvalidArgument, "User id is an invalid uuid")
 		return
