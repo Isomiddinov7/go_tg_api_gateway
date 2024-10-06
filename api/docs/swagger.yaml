@@ -1586,7 +1586,7 @@ paths:
       parameters:
       - description: id
         in: path
-        name: user_id
+        name: id
         required: true
         type: string
       produces:

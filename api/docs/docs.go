@@ -1583,7 +1583,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "id",
-                        "name": "user_id",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
