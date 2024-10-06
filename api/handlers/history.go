@@ -77,7 +77,7 @@ func (h *Handler) HistoryUserAll(c *gin.Context) {
 // @Tags HistoryMessage
 // @Accept json
 // @Produce json
-// @Param user_id query string true "id"
+// @Param user_id path string true "id"
 // @Success 200 {object} http.Response{data=coins_service.HistoryMessageResponse} "HistoryMessageResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"

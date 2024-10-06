@@ -1584,7 +1584,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "id",
                         "name": "user_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
