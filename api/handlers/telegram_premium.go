@@ -332,3 +332,43 @@ func (h *Handler) GetPremiumTransactionById(c *gin.Context) {
 
 	h.handleResponse(c, http.OK, resp)
 }
+
+// Update godoc
+// @ID update_price
+// @Router /premium/price/{id} [PUT]
+// @Summary Update Premium
+// @Description Update Premium
+// @Tags Premium
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Param profile body coins_service.UpdatePrice true "UpdatePriceCoin"
+// @Success 200 {object} http.Response{data=coins_service.TelegramPremium} "TelegramPremium data"
+// @Response 400 {object} http.Response{data=string} "Bad Request"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) UpdateStars(c *gin.Context) {
+
+	var status coins_service.UpdatePrice
+	status.PriceId = c.Param("id")
+	if !utils.IsValidUUID(status.PriceId) {
+		h.handleResponse(c, http.InvalidArgument, "Premium price id is an invalid uuid")
+		return
+	}
+
+	err := c.ShouldBindJSON(&status)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	resp, err := h.services.TelegramPremium().Update(
+		c.Request.Context(),
+		&status,
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
+}

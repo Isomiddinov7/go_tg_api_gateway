@@ -335,6 +335,15 @@ definitions:
       status:
         type: string
     type: object
+  coins_service.UpdatePrice:
+    properties:
+      price:
+        type: string
+      price_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
   coins_service.UpdateStatus:
     properties:
       transaction_id:
@@ -2275,6 +2284,57 @@ paths:
                   type: string
               type: object
       summary: Create Price
+      tags:
+      - Premium
+  /premium/price/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update Premium
+      operationId: update_price
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UpdatePriceCoin
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/coins_service.UpdatePrice'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: TelegramPremium data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/coins_service.TelegramPremium'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Premium
       tags:
       - Premium
   /premium/transaction:
